@@ -1,0 +1,173 @@
+# Rules
+
+## Always
+
+- **Ask whether the territory is in force before surveying it.** A body of work
+  somebody will change gets a map. An archive gets a note saying so.
+- **Count before you describe.** Every phase that produces a claim produces a
+  number first, said out loud.
+- **Give every claim a `file:line`.** A claim with no anchor is a rumour, and a
+  rumour in a map is worse than a gap.
+- **Sight twice before writing anything down as dead.** Four sightings, in fact
+  — see `reference/ghost-tests.md`. Record which ones were run.
+- **Write `Does not hit` on every card.** Name the one neighbour a competent
+  reader would guess next, and the one sentence that separates them.
+- **Stamp every card with the date and the commit it was true at.** A map that
+  cannot be checked for staleness cannot be trusted.
+- **Write the catalog last and put it first.** You do not know what routes until
+  you know what is there.
+- **Say what you do not know.** `## Open` with a real gap in it is worth more
+  than a card that pretends to be complete.
+
+## Never
+
+- **Never write a card while the CENSUS gate is open.** Inventory precedes
+  cards. This is the one rule that has a gate rather than a reminder, because a
+  gate can be seen to be violated.
+- **Never mark a name dead on one sighting.** Deleting working code is the
+  expensive error.
+- **Never use a quality adjective about the territory.** Not *clean*, *messy*,
+  *elegant*, *over-engineered*, *monolithic*, *legacy*. Counts, not verdicts.
+- **Never put a code fence in a card or in the catalog.** At most one quoted
+  line per card, inline, tagged. Everything else is an anchor.
+- **Never let the catalog carry a fact a reader would act on.** A gloss and a
+  signpost route; a mechanism does not. *"the 73 names both halves must agree on"*
+  tells you which card to open; *"rename it in one place and it fails at
+  button-press"* is the card's job.
+- **Never map a wish as live.** A plan, a TODO, an issue, a name in a doc — none
+  of those is an object until something calls it.
+- **Never write the map as a list of what is wrong.** Ghosts are on it as **road
+  signs, not a snag list** — a reader who does not know about them builds the
+  wrong thing. If a section could be filed as a ticket, rewrite it. *"Nothing
+  listens to this, so do not wire to it"* is cartography; *"this is broken"* is
+  somebody else's walk. Absence is not a finding either: what a thing does is the
+  shape of the territory, what it lacks is not.
+- **Never describe an example instead of showing it.**
+- **Never write into your own folder**, and never assume you may write into the
+  territory either. Ask.
+
+## Workflow — five phases, five gates
+
+Say the gate out loud when you reach it. Do not cross a closed one.
+
+### 1 PERIMETER
+
+Establish what the territory is and is not: its boundary (which directories are
+in), whether it is **in force** or **archive**, its entry points, and the
+**do-not-map list** — dependencies, vendored code, generated output, lockfiles,
+build artefacts.
+
+> **GATE: BOUNDARY CLOSED** — the boundary is one line, the do-not-map list is
+> named, and the territory is declared in force or archive. After this gate, no
+> file outside the boundary is opened.
+
+### 2 CENSUS
+
+Enumerate **names**, not behaviour, using `reference/edge-census.md`. Registries,
+entry points, call sites, channel pairs, state files, config keys, doc artefacts,
+branches. Output is a raw table: candidate nouns and candidate edges, each with
+an anchor and a count.
+
+> **GATE: COUNTS ON THE TABLE** — every candidate noun and every candidate edge
+> has a `file:line`, and the totals are stated out loud. **No card may be
+> written while this gate is open.**
+
+### 3 TRIANGULATION
+
+Every name CENSUS could not reference gets the four sightings from
+`reference/ghost-tests.md`. Every repeated token gets the collision protocol from
+`reference/naming-collisions.md`. Output is a verdict table: name, four verdicts,
+status, reach.
+
+> **GATE: NO UNVERIFIED DEAD** — nothing is marked leftover or ghost without
+> four recorded verdicts, and every collision has its referents counted. A name
+> still unresolved goes in `## Open`, never in `## Dead here`.
+
+### 4 CARDS
+
+Write cards in the closed schema below. Derive `Hits` from the edge table and
+`Does not hit` from `reference/wrong-neighbours.md`.
+
+**Cards are drawn lazily.** The first pass writes only the nouns the catalog's
+question table routes to, plus every noun carrying a ghost. The rest are drawn
+on request. On a large territory the deliverable of a first run is *the catalog
+and the warnings*, not a card for every noun.
+
+> **GATE: EVERY CARD CITED** — each card has at least one anchor, zero code
+> fences, at most one quoted line, at most 40 lines, and a `Does not hit`
+> naming a neighbour that exists on the shelf.
+
+### 5 CATALOG
+
+Write `catalog.md`: counts, warnings, question table, shelf, and what is not on
+the shelf.
+
+> **GATE: ONE-QUESTION TEST PASSED** — put three questions a cold reader would
+> actually ask to the catalog. Each must route to **exactly one** card. Route to
+> two, or to none, and go back to CARDS. Record the three questions and their
+> routes at the bottom of the catalog.
+
+## Format
+
+### Where the map goes
+
+**Ask before you write, and never assume you may write into the territory.** A
+map must not require write access to the thing it maps: plenty of territories are
+read-only, someone else's, or being worked in right now. Default to a
+`<mappings-root>/<territory>/` folder of the reader's own; write inside the
+territory only with consent. Never into this folder.
+
+```
+catalog.md          the index
+objects/<noun>.md   one card per noun
+collisions.md       only if the territory reuses a word
+walks.md            routed questions with their answers
+map.html            optional human view — see render/, and film/ for an explainer
+```
+
+### The card
+
+The template, the four card types, the field meanings and the size limits live
+in one place: `reference/card-types.md`. Do not restate them here — a card is
+written by opening one file, not two.
+
+Two things worth holding in your head while you work. **Status** answers exactly
+one question: *does touching this change behaviour today?* **Reach** is a
+separate axis, and it is what produces a correct `Does not hit` for something no
+interface ever calls.
+
+### The catalog
+
+At most 60 lines of routing content. One line per noun. Three mandatory blocks
+before the shelf: the counts, the signposts a reader must meet **before** opening
+any card, and the question table that routes them. Then the shelf, then what is
+not on it.
+
+**A staleness banner does not count against the 60.** If the territory moved
+since the cards were verified, say so in a block at the very top — old and new
+commit, what changed, which nouns most likely moved. That is a health header, not
+routing; making it compete for the budget would push real content out to make
+room for a warning.
+
+### walks.md
+
+Optional, written after the catalog. Groups questions by **what a reader wants to
+talk about** — how it is built, what is on screen, what it can do — and answers
+each in two to four sentences. Per question: the question as a heading, the
+answer, the card it routes to.
+
+Every claim in an answer must already be on the card it points at; if not, the
+card is missing a fact. That is why it comes last, and why it is a reading order
+rather than a second index. And let an answer be **no** — a question set with no
+negative answers is a feature list wearing a question mark.
+
+### Response shape
+
+Every reply during a survey opens with the phase and the gate state:
+
+```
+PHASE 3 TRIANGULATION — gate NO UNVERIFIED DEAD: open
+```
+
+Then the work. Then, if a gate closed, the gate line and what it cost. A reader
+should always be able to tell what has been proved and what has not.

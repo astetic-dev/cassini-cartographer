@@ -1,0 +1,738 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>System map</title>
+<style>
+:root{
+  color-scheme: light dark;
+  --bg:#f4f6fb; --surface:#fdfdff; --surface-alt:#eef2fa;
+  --text:#1c2330; --text-strong:#0f1530; --text-muted:#5c6a86;
+  --accent:#0f6d7e; --accent-dim:#b7e6ee; --line:#d7dfee;
+  --ok:#1f7a4d; --warn:#a8620a;
+  --beat:600ms; --half-beat:300ms; --stagger:267ms;
+  --ease-out:cubic-bezier(.16,1,.3,1); --ease-in-out:cubic-bezier(.65,0,.35,1);
+  --font-head:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --font-body:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --font-mono:"Cascadia Mono",Consolas,"SF Mono",Menlo,monospace;
+  --radius:10px; --stroke:2px;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f1530; --surface:#171f48; --surface-alt:#232d5e;
+    --text:#dfe6f5; --text-strong:#eef3fc; --text-muted:#8290bb;
+    --accent:#3ddced; --accent-dim:#1897ab; --line:#232d5e;
+    --ok:#7ceaf6; --warn:#f0a83c;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f1530; --surface:#171f48; --surface-alt:#232d5e;
+  --text:#dfe6f5; --text-strong:#eef3fc; --text-muted:#8290bb;
+  --accent:#3ddced; --accent-dim:#1897ab; --line:#232d5e;
+  --ok:#7ceaf6; --warn:#f0a83c;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font-body);
+  font-size:15px;line-height:1.4;min-height:100vh}
+h1{font-family:var(--font-head);font-size:19px;margin:0;letter-spacing:-.01em;color:var(--text-strong)}
+code,.mono{font-family:var(--font-mono);font-size:.86em}
+header{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;
+  padding:16px 20px 12px;border-bottom:1px solid var(--line)}
+.counts{color:var(--text-muted);font-size:13px}
+.counts b{color:var(--text);font-weight:600}
+.spacer{flex:1 1 auto}
+button{font:inherit;color:inherit;background:var(--surface);border:1px solid var(--line);
+  border-radius:6px;padding:4px 10px;cursor:pointer}
+button:hover{border-color:var(--accent)}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* ---- warnings, read before any card ---- */
+.warnings{margin:0;padding:12px 20px;border-bottom:1px solid var(--line);
+  background:var(--surface-alt)}
+.warnings ul{margin:0;padding-left:18px}
+.warnings li{margin:2px 0;font-size:13.5px}
+.tag{display:inline-block;font-family:var(--font-mono);font-size:11px;
+  letter-spacing:.14em;text-transform:uppercase;padding:1px 6px;border-radius:4px;
+  border:1px solid currentColor;margin-right:6px}
+.tag.ghost{color:var(--text-muted)} .tag.collision{color:var(--warn)}
+
+/* ---- orientation: what territory is this? ---- */
+.what{margin:0;padding:14px 20px 0;max-width:860px;color:var(--text)}
+.what p{margin:0 0 8px;font-size:15px;line-height:1.5}
+.what p:first-child{font-size:16.5px}
+.what b{color:var(--text-strong)}
+.what .shape{font-family:var(--font-mono);font-size:13px;color:var(--text-muted);
+  border-left:3px solid var(--line);padding-left:12px;margin-top:10px}
+
+/* ---- start here: the question table is the front door ---- */
+.ask{padding:14px 20px 4px}
+.ask h2{font-family:var(--font-head);font-size:14px;margin:0 0 8px;color:var(--text-strong)}
+.ask ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;max-width:860px}
+.ask button{display:flex;width:100%;text-align:left;gap:10px;align-items:baseline;
+  padding:8px 12px;border-radius:8px}
+.ask .q{flex:1 1 auto}
+.ask .to{font-family:var(--font-mono);font-size:11.5px;color:var(--accent);white-space:nowrap}
+.topics{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px}
+.topics button{border-radius:999px;padding:5px 14px;font-size:13.5px}
+.topics button[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);
+  background:var(--surface-alt);font-weight:600}
+.blurb{margin:0 0 10px;font-size:13px;color:var(--text-muted);max-width:860px}
+
+/* ---- the answer: prose the reader came for ---- */
+.answer{margin:0 0 12px;padding:12px 14px;border-left:3px solid var(--accent);
+  background:var(--surface);border-radius:0 8px 8px 0;max-width:860px}
+.answer h3{margin:0 0 6px;font-size:15px;font-family:var(--font-head);color:var(--text-strong)}
+.answer p{margin:0;font-size:14px;line-height:1.5}
+.answer code{background:var(--surface-alt);padding:1px 4px;border-radius:3px}
+
+/* ---- legend ---- */
+.legend{display:flex;flex-wrap:wrap;gap:14px;padding:10px 20px 0;font-size:12.5px;
+  color:var(--text-muted)}
+.legend span b{color:var(--text);font-weight:600}
+.hint{padding:12px 20px 0;font-size:13px;color:var(--text-muted);max-width:760px}
+
+/* ---- stage ---- */
+main{padding:4px 20px 0}
+.elabel{font-family:var(--font-mono);font-size:11px;fill:var(--text-muted);
+  paint-order:stroke;stroke:var(--bg);stroke-width:4px;stroke-linejoin:round}
+.stage[data-view="deep"] .elabel{opacity:.25}
+.stage[data-view="deep"] .elabel[data-wave]{opacity:1;fill:var(--accent)}
+.stage[data-mode="list"] .elabel{display:none}
+.stagewrap{position:relative;overflow:auto}
+.stage{position:relative;transform-origin:0 0}
+.stage svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.edge{fill:none;stroke:var(--line);stroke-width:2}
+.edge[data-st="live"]{stroke:var(--accent);opacity:.55}
+.edge[data-st="leftover"]{stroke:var(--warn);stroke-dasharray:4 2;opacity:.5}
+.edge[data-st="ghost"]{stroke:var(--text-muted);stroke-dasharray:2 5;opacity:.45}
+
+.node{position:absolute;transform:translate(-50%,-50%);width:184px;text-align:left;
+  background:var(--surface);border:var(--stroke) solid var(--line);border-radius:var(--radius);
+  padding:8px 10px;cursor:pointer;transition:opacity .18s}
+.node .nm{display:block;font-weight:600;color:var(--text-strong);font-size:13.5px}
+.node .sm{display:block;color:var(--text-muted);font-size:11.5px;margin-top:2px}
+.node .st{display:inline-flex;align-items:center;gap:4px;font-family:var(--font-mono);
+  font-size:10px;letter-spacing:.12em;text-transform:uppercase;margin-top:5px;color:var(--text-muted)}
+.node[data-st="live"]{border-color:var(--accent)}
+.node[data-st="live"] .st{color:var(--accent)}
+.node[data-st="leftover"]{border-color:var(--warn);
+  background:repeating-linear-gradient(45deg,transparent,transparent 5px,var(--surface-alt) 5px,var(--surface-alt) 10px),var(--surface)}
+.node[data-st="leftover"] .st{color:var(--warn)}
+.node[data-st="ghost"]{border-style:dashed;border-color:var(--text-muted);background:transparent}
+
+/* ---- deep dive ---- */
+.stage[data-view="deep"] .node{opacity:.34}
+.stage[data-view="deep"] .node[data-wave]{opacity:1}
+.stage[data-view="deep"] .node[data-wave="origin"],
+.stage[data-view="deep"] .node[data-wave="hit"]{
+  animation:wave-in var(--beat) var(--ease-out) var(--delay) both}
+@keyframes wave-in{
+  from{opacity:.34;transform:translate(-50%,-50%) scale(1);box-shadow:0 0 0 0 var(--accent)}
+  60%{opacity:1;transform:translate(-50%,-50%) scale(1.04);box-shadow:0 0 0 12px transparent}
+  to{opacity:1;transform:translate(-50%,-50%) scale(1);box-shadow:0 0 0 2px var(--accent)}}
+.stage[data-view="deep"] .edge[data-wave="edge"]{
+  stroke:var(--accent);opacity:1;stroke-dasharray:var(--len);stroke-dashoffset:var(--len);
+  animation:draw var(--half-beat) linear var(--delay) both}
+@keyframes draw{to{stroke-dashoffset:0}}
+.stage[data-view="deep"] .edge[data-wave="stub"]{
+  stroke:var(--text-muted);opacity:.8;stroke-dasharray:var(--len);stroke-dashoffset:var(--len);
+  animation:draw-stub var(--half-beat) var(--ease-out) var(--delay) both}
+@keyframes draw-stub{to{stroke-dashoffset:calc(var(--len) * .55)}}
+.stage[data-view="deep"] .node[data-wave="blocked"]{opacity:.34;
+  animation:refuse var(--beat) var(--ease-in-out) var(--delay) both}
+@keyframes refuse{0%{opacity:.34}30%{opacity:.5;transform:translate(-50%,-50%) translateX(-3px)}
+  55%{opacity:.4;transform:translate(-50%,-50%) translateX(3px)}
+  100%{opacity:.34;transform:translate(-50%,-50%)}}
+.node .strike{position:absolute;left:6px;right:6px;top:50%;height:2px;background:var(--warn);
+  display:none}
+.node[data-wave="blocked"] .strike{display:block;
+  animation:strike var(--half-beat) var(--ease-out) calc(var(--delay) + var(--half-beat)) both}
+@keyframes strike{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+.hop{display:none;font-family:var(--font-mono);font-size:10px;color:var(--text-muted)}
+
+/* ---- list mode ---- */
+.stage[data-mode="list"] svg{display:none}
+.stage[data-mode="list"]{display:flex;flex-direction:column;gap:8px;height:auto!important;transform:none!important}
+.stage[data-mode="list"] .node{position:static;transform:none;width:auto}
+.stage[data-mode="list"] .node[data-wave]{transform:none!important;animation:none!important}
+
+/* ---- card panel ---- */
+.panel{margin:14px 0 0;padding:14px 16px;border:1px solid var(--line);
+  border-radius:var(--radius);background:var(--surface)}
+.panel h2{margin:0 0 2px;font-size:16px;font-family:var(--font-head);color:var(--text-strong)}
+.panel .src{font-family:var(--font-mono);font-size:12px;color:var(--text-muted);cursor:pointer}
+.panel dl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:10px 0 0;font-size:13.5px}
+.panel dt{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--text-muted);padding-top:2px}
+.panel dd{margin:0}
+.panel .no{color:var(--warn)}
+.dead{margin-top:10px;padding:8px 10px;border:1px dashed var(--text-muted);border-radius:6px;
+  font-size:13px}
+
+/* ---- lint + footer ---- */
+.lint{margin:14px 0 0;padding:8px 12px;border:1px solid var(--warn);border-radius:6px;
+  font-size:13px;background:var(--surface)}
+.lint summary{cursor:pointer;color:var(--warn)}
+footer{margin-top:20px;padding:10px 20px 16px;border-top:1px solid var(--line);
+  font-family:var(--font-mono);font-size:11px;color:var(--text-muted)}
+
+@media (prefers-reduced-motion:reduce){
+  .stage *,.stage *::before,.stage *::after{animation:none!important;transition:none!important}
+  .stage[data-view="deep"] .edge[data-wave]{stroke-dashoffset:0}
+  .stage[data-view="deep"] .edge[data-wave="stub"]{stroke-dasharray:6 5;opacity:.55}
+  .stage[data-view="deep"] .node[data-wave="hit"],
+  .stage[data-view="deep"] .node[data-wave="origin"]{opacity:1;box-shadow:0 0 0 2px var(--accent)}
+  .node[data-wave="blocked"] .strike{display:block;clip-path:none}
+  .hop{display:inline}
+}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+</style>
+</head>
+<body>
+
+<header>
+  <h1 id="title">System map</h1>
+  <span class="counts" id="counts"></span>
+  <span class="spacer"></span>
+  <button id="back" hidden>&larr; map</button>
+  <button id="replay" hidden>replay</button>
+  <button id="theme">theme</button>
+</header>
+
+<p class="what" id="what" hidden></p>
+
+<section class="warnings" id="warnings" hidden></section>
+
+<section class="ask" id="ask" hidden></section>
+
+<p class="hint" id="hint"></p>
+<div class="legend" id="legend"></div>
+
+<main>
+  <div class="stagewrap" id="stagewrap">
+    <div class="stage" id="stage" data-view="overview"><svg id="wires"></svg></div>
+  </div>
+  <div id="panel"></div>
+  <div id="lint"></div>
+</main>
+
+<p class="sr" id="live" aria-live="polite"></p>
+<footer id="prov"></footer>
+
+<script type="application/json" id="map-data">{{MAP_JSON}}</script>
+<script>
+(function () {
+  "use strict";
+  var MAP;
+  try { MAP = JSON.parse(document.getElementById("map-data").textContent); }
+  catch (e) { document.body.innerHTML = "<p style='padding:20px'>map-data is not valid JSON.</p>"; return; }
+
+  var META = MAP.meta || {}, NOUNS = MAP.nouns || [], EDGES = MAP.edges || [], LINT = MAP.lint || [];
+  var BEAT = META.beatMs || 600, STAG = META.staggerMs || 267, HALF = BEAT / 2;
+  var GW = 1600, GH_MIN = 900, GH = GH_MIN, SAFE = 80, NW = 184, NH = 58;
+  var ROW = 96;   // vertical pitch per node: NH plus breathing room
+
+  var byId = {}, edgeById = {};
+  NOUNS.forEach(function (n) { byId[n.id] = n; });
+  EDGES.forEach(function (e) { edgeById[e.id] = e; });
+
+  var STATUS_GLYPH = { live: "●", leftover: "◑", ghost: "○" };
+  var reduceMq = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  // Lenses. A flat meta.questions array still works: it becomes one unnamed lens.
+  var TOPICS = META.topics ||
+    (META.questions ? [{ id: "all", label: "Questions", questions: META.questions }] : []);
+
+  var state = { view: "overview", noun: null, topic: 0, q: null }, hasAsk = false;
+
+  function currentQ() {
+    var t = TOPICS[state.topic];
+    if (!t || state.q == null) return null;
+    return (t.questions || [])[state.q] || null;
+  }
+
+  function renderTopics() {
+    var host = document.getElementById("ask");
+    var t = TOPICS[state.topic] || TOPICS[0];
+    var tabs = TOPICS.map(function (x, i) {
+      return '<button data-topic="' + i + '" aria-pressed="' + (i === state.topic ? "true" : "false") +
+        '">' + esc(x.label) + "</button>";
+    }).join("");
+    var list = (t.questions || []).map(function (q, i) {
+      var n = byId[q.id];
+      return '<li><button data-goto="' + esc(q.id) + '" data-q="' + i + '"><span class="q">' +
+        esc(q.q) + '</span><span class="to">' + esc(n ? n.name : q.id) + " &rarr;</span></button></li>";
+    }).join("");
+    host.innerHTML = "<h2>What do you want to talk about?</h2>" +
+      '<div class="topics">' + tabs + "</div>" +
+      (t.blurb ? '<p class="blurb">' + esc(t.blurb) + "</p>" : "") +
+      "<ul>" + list + "</ul>";
+  }
+  var placed = [], nodeEls = {}, edgeEls = {}, labelEls = {};
+
+  // ---- layout: layered left-to-right, deterministic ------------------------
+  function layout(nouns, edges) {
+    var ix = {}, i;
+    nouns.forEach(function (n, k) { ix[n.id] = k; });
+    var out = nouns.map(function () { return []; });
+    var inn = nouns.map(function () { return []; });
+    var indeg = nouns.map(function () { return 0; });
+    edges.forEach(function (e) {
+      var a = ix[e.from], b = ix[e.to];
+      if (a == null || b == null || a === b) return;
+      out[a].push(b); inn[b].push(a); indeg[b]++;
+    });
+    var rank = nouns.map(function () { return 0; });
+    var guard = nouns.map(function () { return 0; });
+    var stack = [];
+    nouns.forEach(function (_, k) { if (indeg[k] === 0) stack.push(k); });
+    if (!stack.length && nouns.length) stack.push(0);
+    while (stack.length) {
+      var v = stack.pop();
+      if (guard[v]++ > nouns.length) continue;
+      for (i = 0; i < out[v].length; i++) {
+        var w = out[v][i];
+        if (rank[w] < rank[v] + 1) { rank[w] = rank[v] + 1; stack.push(w); }
+      }
+    }
+    var maxRank = 0;
+    rank.forEach(function (r) { if (r > maxRank) maxRank = r; });
+    // an unconnected noun is itself a finding: place it, never hide it
+    nouns.forEach(function (_, k) { if (!out[k].length && !inn[k].length) rank[k] = maxRank + 1; });
+    var cols = [];
+    rank.forEach(function (r, k) { (cols[r] = cols[r] || []).push(k); });
+    var pos = nouns.map(function () { return 0; });
+    cols.forEach(function (c) { c.forEach(function (k, j) { pos[k] = j; }); });
+    for (var sweep = 0; sweep < 2; sweep++) {
+      cols.forEach(function (col) {
+        if (!col) return;
+        col.sort(function (a, b) {
+          var na = out[a].concat(inn[a]), nb = out[b].concat(inn[b]);
+          var ba = na.length ? na.reduce(function (s, j) { return s + pos[j]; }, 0) / na.length : pos[a];
+          var bb = nb.length ? nb.reduce(function (s, j) { return s + pos[j]; }, 0) / nb.length : pos[b];
+          return (ba - bb) || (nouns[a].id < nouns[b].id ? -1 : 1);
+        });
+        col.forEach(function (k, j) { pos[k] = j; });
+      });
+    }
+    // The stage grows to fit the busiest column. A fixed height silently
+    // overlaps nodes as soon as one column gets crowded, and an overlapping
+    // graph is worse than no graph.
+    var maxCol = 1;
+    cols.forEach(function (c) { if (c && c.length > maxCol) maxCol = c.length; });
+    GH = Math.max(GH_MIN, maxCol * ROW + 2 * SAFE);
+
+    var nc = Math.max(cols.length, 1), colW = (GW - 2 * SAFE) / nc;
+    return nouns.map(function (n, k) {
+      var m = cols[rank[k]].length;
+      return {
+        n: n, rank: rank[k], row: pos[k],
+        x: SAFE + colW * (rank[k] + 0.5),
+        y: SAFE + (GH - 2 * SAFE) * ((pos[k] + 0.5) / m)
+      };
+    });
+  }
+
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) {
+    return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+
+  // Escape first, then re-admit exactly two marks: `code` and **bold**. Generated
+  // text is still text; nothing here is ever injected as raw HTML.
+  function mark(s) {
+    return esc(s)
+      .replace(/`([^`]+)`/g, "<code>$1</code>")
+      .replace(/\*\*([^*]+)\*\*/g, "<b>$1</b>");
+  }
+
+  // ---- build the stage once ----------------------------------------------
+  function build() {
+    placed = layout(NOUNS, EDGES);
+    var stage = document.getElementById("stage"), svg = document.getElementById("wires");
+    stage.style.width = GW + "px"; stage.style.height = GH + "px";
+    svg.setAttribute("viewBox", "0 0 " + GW + " " + GH);
+
+    var pos = {};
+    placed.forEach(function (p) { pos[p.n.id] = p; });
+
+    EDGES.forEach(function (e) {
+      var a = pos[e.from], b = pos[e.to];
+      if (!a || !b) return;
+      var path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      var dx = Math.max(40, (b.x - a.x) * 0.45), d;
+      if (b.rank > a.rank) {
+        d = "M" + (a.x + NW / 2) + "," + a.y + " C" + (a.x + NW / 2 + dx) + "," + a.y +
+            " " + (b.x - NW / 2 - dx) + "," + b.y + " " + (b.x - NW / 2) + "," + b.y;
+      } else {
+        d = "M" + a.x + "," + (a.y + NH / 2) + " C" + a.x + "," + (a.y + NH / 2 + 150) +
+            " " + b.x + "," + (b.y + NH / 2 + 150) + " " + b.x + "," + (b.y + NH / 2);
+      }
+      path.setAttribute("d", d);
+      path.setAttribute("class", "edge");
+      path.setAttribute("data-st", e.status || "live");
+      path.setAttribute("data-id", e.id);
+      svg.appendChild(path);
+      try { path.style.setProperty("--len", path.getTotalLength()); } catch (_) {}
+      edgeEls[e.id] = path;
+
+      // the label IS the "how it moves" content. Without it the graph only says
+      // that two things touch, which is the complaint a reader makes first.
+      if (e.label) {
+        var mid = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 - 7 };
+        try { var p = path.getPointAtLength(path.getTotalLength() / 2); mid.x = p.x; mid.y = p.y - 7; }
+        catch (_) {}
+        var tx = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        tx.setAttribute("class", "elabel");
+        tx.setAttribute("x", mid.x); tx.setAttribute("y", mid.y);
+        tx.setAttribute("text-anchor", "middle");
+        tx.setAttribute("data-id", e.id);
+        tx.textContent = e.label;
+        svg.appendChild(tx);
+        labelEls[e.id] = tx;
+      }
+    });
+
+    placed.forEach(function (p) {
+      var n = p.n;
+      var b = document.createElement("button");
+      b.className = "node";
+      b.setAttribute("data-st", n.status);
+      b.setAttribute("data-goto", n.id);
+      b.style.left = p.x + "px"; b.style.top = p.y + "px";
+      b.innerHTML =
+        '<span class="nm">' + esc(n.name) + "</span>" +
+        '<span class="sm">' + esc(n.summary || "") + "</span>" +
+        '<span class="st">' + STATUS_GLYPH[n.status] + " " + esc(n.status) +
+          (n.reach ? " · " + esc(n.reach) : "") + "</span>" +
+        '<span class="hop"></span><span class="strike"></span>';
+      stage.appendChild(b);
+      nodeEls[n.id] = b;
+    });
+  }
+
+  // ---- the wave -----------------------------------------------------------
+  function buildWave(origin) {
+    var nodeRing = {}, edgeRing = {};
+    nodeRing[origin.id] = 0;
+    (origin.hits || []).forEach(function (hit) {
+      var cur = origin.id, d = 0;
+      (hit.via || []).forEach(function (eid) {
+        var e = edgeById[eid];
+        if (!e) return;
+        var next = e.from === cur ? e.to : e.from;
+        if (edgeRing[eid] == null || d < edgeRing[eid]) edgeRing[eid] = d;
+        d += 1;
+        if (nodeRing[next] == null || d < nodeRing[next]) nodeRing[next] = d;
+        cur = next;
+      });
+      if (!(hit.via || []).length && hit.id) {
+        if (nodeRing[hit.id] == null) nodeRing[hit.id] = 1;
+      }
+    });
+    var rings = [];
+    Object.keys(nodeRing).forEach(function (id) {
+      var d = nodeRing[id];
+      (rings[d] = rings[d] || []).push(id);
+    });
+    rings.forEach(function (r) { if (r) r.sort(); });
+    return { rings: rings, edgeRing: edgeRing, nodeRing: nodeRing };
+  }
+
+  function schedule(origin, wave) {
+    var steps = [], settled = 0;
+    wave.rings.forEach(function (ids, d) {
+      if (!ids) return;
+      ids.forEach(function (id, i) {
+        var delay = d * BEAT + Math.min(i, 2) * STAG;
+        if (delay > settled) settled = delay;
+        steps.push({ kind: id === origin.id ? "origin" : "hit", id: id, delay: delay, hop: d });
+      });
+    });
+    Object.keys(wave.edgeRing).forEach(function (eid) {
+      steps.push({ kind: "edge", id: eid, delay: wave.edgeRing[eid] * BEAT + HALF / 2 });
+    });
+    settled += BEAT;
+    var dnh = origin.doesNotHit;
+    if (dnh && dnh.id) {
+      steps.push({ kind: "blocked", id: dnh.id, delay: settled });
+      EDGES.forEach(function (e) {
+        if (e.from === dnh.id || e.to === dnh.id) steps.push({ kind: "stub", id: e.id, delay: settled });
+      });
+    }
+    return { steps: steps, totalMs: settled + 2 * BEAT };
+  }
+
+  function clearWave() {
+    Object.keys(nodeEls).forEach(function (k) {
+      nodeEls[k].removeAttribute("data-wave");
+      nodeEls[k].style.removeProperty("--delay");
+      nodeEls[k].querySelector(".hop").textContent = "";
+    });
+    Object.keys(edgeEls).forEach(function (k) {
+      edgeEls[k].removeAttribute("data-wave");
+      edgeEls[k].style.removeProperty("--delay");
+    });
+    Object.keys(labelEls).forEach(function (k) { labelEls[k].removeAttribute("data-wave"); });
+  }
+
+  function play(originId) {
+    var origin = byId[originId];
+    if (!origin) return;
+    clearWave();
+    void document.getElementById("stage").offsetWidth;
+    var sched = schedule(origin, buildWave(origin));
+    sched.steps.forEach(function (s) {
+      var isEdge = (s.kind === "edge" || s.kind === "stub");
+      var el = isEdge ? edgeEls[s.id] : nodeEls[s.id];
+      if (!el) return;
+      el.style.setProperty("--delay", (reduceMq.matches ? 0 : s.delay) + "ms");
+      el.setAttribute("data-wave", s.kind);
+      if (isEdge && labelEls[s.id]) labelEls[s.id].setAttribute("data-wave", s.kind);
+      if (s.hop != null && el.querySelector) {
+        var h = el.querySelector(".hop");
+        if (h) h.textContent = s.hop === 0 ? "origin" : s.hop + (s.hop === 1 ? " hop" : " hops");
+      }
+    });
+    var dnh = origin.doesNotHit && byId[origin.doesNotHit.id];
+    document.getElementById("live").textContent =
+      origin.name + " hits " + (origin.hits || []).length + " nouns." +
+      (dnh ? " It does not hit " + dnh.name + "." : "");
+  }
+
+  // ---- views --------------------------------------------------------------
+  function renderPanel() {
+    var host = document.getElementById("panel");
+    if (state.view !== "deep") { host.innerHTML = ""; return; }
+    var n = byId[state.noun];
+    if (!n) { host.innerHTML = ""; return; }
+    var dnh = n.doesNotHit || {};
+    var dnhName = byId[dnh.id] ? byId[dnh.id].name : dnh.id;
+    var nHits = (n.hits || []).length;
+    // The answer comes first. A reader who clicked a question wants prose, not a
+    // field list — the card fields are the evidence under it.
+    var q = currentQ();
+    var html = "";
+    if (q && q.answer) {
+      // Escape first, then re-admit backticks as <code>. Never inject the answer
+      // as raw HTML: it is generated text, and generated text still gets escaped.
+      html += '<div class="answer"><h3>' + esc(q.q) + "</h3><p>" + mark(q.answer) + "</p></div>";
+    }
+    html += '<div class="panel"><h2>' + esc(n.name) + "</h2>" +
+      '<span class="src" data-select>' + esc(n.source || "") + " · " + esc(n.card || "") + "</span>" +
+      '<p style="margin:10px 0 0;font-size:14px">' + (
+        nHits
+          ? "If you change <b>" + esc(n.name) + "</b>, <b>" + nHits + "</b> other thing" +
+            (nHits === 1 ? " moves" : "s move") +
+            (dnhName ? " &mdash; but <b>" + esc(dnhName) + "</b> does not, even though it looks like it should." : ".")
+          : "Changing <b>" + esc(n.name) + "</b> moves nothing else on this map." +
+            (dnhName ? " Not even <b>" + esc(dnhName) + "</b>, which is the thing most readers expect it to reach." : "")
+      ) + "</p><dl>";
+    html += "<dt>is</dt><dd>" + esc(n.summary || "") + "</dd>";
+    html += "<dt>type</dt><dd>" + esc(n.type) + " · " + esc(n.status) +
+      (n.reach ? " · " + esc(n.reach) : "") + "</dd>";
+    if ((n.hits || []).length) {
+      html += "<dt>hits</dt><dd>" + n.hits.map(function (h) {
+        return "<b>" + esc(byId[h.id] ? byId[h.id].name : h.id) + "</b> &mdash; " + esc(h.why);
+      }).join("<br>") + "</dd>";
+    }
+    if (dnh.id) {
+      html += '<dt>does not hit</dt><dd class="no"><b>' + esc(dnhName) + "</b> &mdash; " + esc(dnh.why) + "</dd>";
+    }
+    html += "</dl>";
+    (n.dead || []).forEach(function (d) {
+      html += '<div class="dead"><b>' + esc(d.name) + "</b> &mdash; " + esc(d.status) +
+        " &mdash; " + esc(d.at) + (d.why ? " &mdash; " + esc(d.why) : "") + "</div>";
+    });
+    html += "<p style='margin:10px 0 0;font-size:12.5px;color:var(--text-muted)'>" +
+      "This is a view. The card is " + esc(n.card || "") + ".</p></div>";
+    host.innerHTML = html;
+  }
+
+  function render() {
+    var stage = document.getElementById("stage");
+    stage.setAttribute("data-view", state.view);
+    document.getElementById("back").hidden = state.view !== "deep";
+    document.getElementById("replay").hidden = state.view !== "deep";
+    if (hasAsk) document.getElementById("ask").hidden = state.view === "deep";
+    document.getElementById("hint").hidden = state.view === "deep";
+    if (META.is) document.getElementById("what").hidden = state.view === "deep";
+    if (state.view === "deep") { play(state.noun); } else { clearWave(); }
+    renderPanel();
+    fit();
+  }
+
+  function go(view, noun, q) {
+    state.view = view; state.noun = noun || null; state.q = (q == null ? null : q);
+    try { location.hash = view === "deep" ? "/n/" + noun : "/"; } catch (_) {}
+    render();
+  }
+
+  // ---- fit and list mode --------------------------------------------------
+  function fit() {
+    var wrap = document.getElementById("stagewrap"), stage = document.getElementById("stage");
+    var w = wrap.clientWidth || GW;
+    if (w < 640) {
+      stage.setAttribute("data-mode", "list");
+      stage.style.transform = "none";
+      wrap.style.height = "auto";
+      return;
+    }
+    stage.removeAttribute("data-mode");
+    var k = Math.min(1, w / GW);
+    stage.style.transform = "scale(" + k + ")";
+    wrap.style.height = (GH * k) + "px";
+  }
+
+  // ---- chrome -------------------------------------------------------------
+  function chrome() {
+    document.getElementById("title").textContent = (META.title || "System map") + " — system map";
+    // Dead members are deduped by name: the same ghost is often cited on more
+    // than one card (its owning noun, and the surface that registers it). Counting
+    // the citations instead of the things is how a view starts disagreeing with
+    // its own map.
+    var ghostNames = {};
+    NOUNS.forEach(function (n) {
+      if (n.status === "ghost") ghostNames[n.id] = 1;
+      (n.dead || []).forEach(function (d) { if (d.status === "ghost") ghostNames[d.name] = 1; });
+    });
+    var leftNames = {};
+    NOUNS.forEach(function (n) {
+      if (n.status === "leftover") leftNames[n.id] = 1;
+      (n.dead || []).forEach(function (d) { if (d.status === "leftover") leftNames[d.name] = 1; });
+    });
+    // A dead edge is only its own finding when BOTH endpoints are alive - a live
+    // noun with a dead output. An edge into a ghost node is the same fact as the
+    // ghost node, and counting it twice reads as a contradiction.
+    var deadEdges = EDGES.filter(function (e) {
+      return e.status === "ghost" && !ghostNames[e.from] && !ghostNames[e.to];
+    }).length;
+    document.getElementById("counts").innerHTML =
+      "<b>" + NOUNS.length + "</b> nouns · <b>" + EDGES.length + "</b> edges · <b>" +
+      Object.keys(ghostNames).length + "</b> ghost · <b>" +
+      Object.keys(leftNames).length + "</b> leftover" +
+      (deadEdges ? " · <b>" + deadEdges + "</b> dead edge" + (deadEdges === 1 ? "" : "s") : "");
+
+    var warn = [], seenWarn = {};
+    NOUNS.forEach(function (n) {
+      (n.dead || []).forEach(function (d) {
+        if (seenWarn[d.name]) return;          // same ghost, cited on two cards
+        seenWarn[d.name] = 1;
+        warn.push('<li><span class="tag ghost">' + esc(d.status) + "</span><code>" + esc(d.name) +
+          "</code> (" + esc(d.at) + ") &mdash; " + esc(d.why || "on the surface, called by nothing") +
+          " → <code>" + esc(n.card || "") + "</code></li>");
+      });
+    });
+    (META.collisions || []).forEach(function (c) {
+      warn.push('<li><span class="tag collision">collision</span><code>' + esc(c.word) +
+        "</code> means " + esc(c.count) + " different things here → <code>" +
+        esc(c.file || "collisions.md") + "</code></li>");
+    });
+    if (warn.length) {
+      var w = document.getElementById("warnings");
+      w.innerHTML = "<strong style='font-size:13px'>Read before any card</strong><ul>" +
+        warn.join("") + "</ul>";
+      w.hidden = false;
+    }
+
+    // Orientation before anything else. A reader who does not know what the
+    // territory IS cannot use a graph of its parts, however accurate.
+    if (META.is || (META.explainer && META.explainer.length)) {
+      var w = document.getElementById("what");
+      var bits = [];
+      if (META.is) bits.push("<p><b>" + esc(META.title || "This") + "</b> " + mark(META.is) + "</p>");
+      (META.explainer || []).forEach(function (para) { bits.push("<p>" + mark(para) + "</p>"); });
+      if (META.shape) bits.push('<p class="shape">' + mark(META.shape) + "</p>");
+      w.innerHTML = bits.join("");
+      w.hidden = false;
+    }
+
+    // The front door. A reader arrives with a question, not with a diagram, and
+    // they arrive wanting to talk about ONE aspect. Lenses group the questions;
+    // each question carries the answer, because a highlight on a graph is not an
+    // answer to anything.
+    if (TOPICS.length) {
+      hasAsk = true;
+      document.getElementById("ask").hidden = false;
+      renderTopics();
+    }
+
+    document.getElementById("hint").textContent =
+      "Each box below is something you can change. Click one to see what moves when you " +
+      "touch it, and which nearby thing looks connected but is not. The label on a line " +
+      "is how the two actually reach each other.";
+
+    document.getElementById("legend").innerHTML =
+      "<span>● <b>live</b> — changing it changes behaviour today</span>" +
+      "<span>◑ <b>leftover</b> — did a real job once, inert now</span>" +
+      "<span>○ <b>ghost</b> — never wired, still looks live</span>" +
+      "<span><b>ui</b> / <b>internal</b> / <b>both</b> — who can reach it</span>";
+
+    if (LINT.length) {
+      document.getElementById("lint").innerHTML =
+        '<details class="lint"><summary>' + LINT.length + " finding" + (LINT.length === 1 ? "" : "s") +
+        " where this view disagrees with the cards</summary><ul>" +
+        LINT.map(function (l) {
+          return "<li><code>" + esc(l.code) + "</code> &mdash; " + esc(l.message) +
+            " &mdash; <code>" + esc(l.at || l.noun || "") + "</code></li>";
+        }).join("") + "</ul></details>";
+    }
+
+    document.getElementById("prov").textContent =
+      "map.html · view of " + (META.cardsDir || "objects") + "/ (" + NOUNS.length + " cards) · " +
+      "surveyed " + (META.surveyed || "?") + " at " + (META.at || "?") + " · " +
+      "territory " + (META.territoryFiles || "?") + " files, " + (META.territoryLines || "?") + " lines · " +
+      "DO NOT EDIT — regenerate from the cards";
+  }
+
+  // ---- wiring -------------------------------------------------------------
+  document.addEventListener("click", function (ev) {
+    var t = ev.target;
+    var sel = t.closest && t.closest("[data-select]");
+    if (sel) { try { getSelection().selectAllChildren(sel); } catch (_) {} return; }
+    var tp = t.closest && t.closest("[data-topic]");
+    if (tp) { state.topic = parseInt(tp.getAttribute("data-topic"), 10); state.q = null; renderTopics(); return; }
+    var el = t.closest && t.closest("[data-goto]");
+    if (el) {
+      ev.preventDefault();
+      var qi = el.getAttribute("data-q");
+      go("deep", el.getAttribute("data-goto"), qi === null ? null : parseInt(qi, 10));
+      return;
+    }
+    if (t.id === "back") { go("overview"); return; }
+    if (t.id === "replay") { play(state.noun); return; }
+    if (t.id === "theme") {
+      var r = document.documentElement;
+      var now = r.getAttribute("data-theme");
+      r.setAttribute("data-theme", now === "dark" ? "light" : "dark");
+      return;
+    }
+  }, false);
+
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && state.view === "deep") go("overview");
+  });
+
+  if (window.ResizeObserver) {
+    new ResizeObserver(fit).observe(document.getElementById("stagewrap"));
+  } else {
+    window.addEventListener("resize", fit);
+  }
+  if (reduceMq.addEventListener) reduceMq.addEventListener("change", render);
+
+  build();
+  chrome();
+  try {
+    var m = /^#\/n\/([\w.-]+)$/.exec(location.hash || "");
+    if (m && byId[m[1]]) { state.view = "deep"; state.noun = m[1]; }
+  } catch (_) {}
+  render();
+
+  window.__map = {
+    layout: function () { return placed; },
+    wave: function (id) { var o = byId[id]; return o ? schedule(o, buildWave(o)) : null; },
+    data: MAP
+  };
+})();
+</script>
+</body>
+</html>

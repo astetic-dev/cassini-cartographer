@@ -1,0 +1,9 @@
+{
+  "version": 3,
+  "zones": {
+    "hall": { "target": 18.5, "sensor": "s-1104" },
+    "living": { "target": 20.0, "sensor": "s-1105" },
+    "study": { "target": 19.0, "sensor": "s-1107" },
+    "bedroom": { "target": 16.0, "sensor": null }
+  }
+}

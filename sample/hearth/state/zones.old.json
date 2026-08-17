@@ -1,0 +1,8 @@
+{
+  "version": 2,
+  "zones": [
+    { "name": "hall", "target": 18.5, "probe": "s-1104" },
+    { "name": "living", "target": 20.0, "probe": "s-1105" },
+    { "name": "study", "target": 19.0, "probe": "s-1107" }
+  ]
+}
