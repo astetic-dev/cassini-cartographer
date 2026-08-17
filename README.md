@@ -16,21 +16,39 @@ instructions.** They define Cassini, the five phases, and the gate between each;
 `reference/` holds the procedures they call for. Without them this is a folder of
 documents. Then type:
 
-> **"Cassini, map the work in sample/hearth."**
+> **"Cassini, map the work in sample/hearth."** — or `sample/wren`, if what you
+> actually want mapped is a folder of markdown rather than a folder of code.
+
+## Two kinds of territory
+
+Cassini surveys a **codebase** and an **ICM workspace** — a tree of markdown that
+routes an agent, where the documents *are* the objects. Same method, different
+instrument: it names which subject it has before it counts anything, then runs
+that subject's sweeps and sightings. A territory that is both gets both.
+
+Running the code method on a workspace is the failure that looks like success. It
+comes back with a tidy map of leftovers and misses the territory completely,
+because there *is anything calling this* has nothing to search for.
 
 ## Try it in 2 minutes
 
-`sample/hearth/` is a small heating-control app — 9 files, 183 non-blank lines.
-It works; nothing in it is broken. Point Cassini at it, then compare what comes
-back with `sample/expected-map.md`, which lists the 29 things a correct map
-contains. **Open the key after your run, not before** — it gives away every
-answer, and `examples.md` is deliberately worked on a different territory so it
-cannot be copied from either.
+Two fixtures, one per subject. Both work; nothing in either is broken.
 
-Watch for one of them. Hearth registers nine commands and the panel appears to
-call five, so four look dead. **Three are alive** — two reached by a name built
-at run time, one called from inside. Exactly one is unwired, and a planning
-document explains how it got that way. That gap is the reason this exists.
+| fixture | subject | size | answer key | seeded facts |
+|---|---|---|---|---|
+| `sample/hearth/` | codebase — a heating-control app | 9 files, 183 non-blank | `sample/expected-map.md` | 29 |
+| `sample/wren/` | workspace — a ringing station's weekly run | 12 files, 248 non-blank | `sample/wren-expected-map.md` | 30 |
+
+**Open the key after your run, not before** — it gives away every answer, and
+`examples.md` is deliberately worked on a third territory so it cannot be copied
+from either.
+
+Watch for one trap in each. Hearth registers nine commands and the panel appears
+to call five, so four look dead: **three are alive** — two reached by a name built
+at run time, one called from inside. Wren has a stage folder holding a complete
+contract, both its input paths resolving on disk, listed in the folder map — and
+**nothing routes to it**, while its numbered siblings all run. Each gap is the
+reason this exists.
 
 ## What you need to install
 
@@ -59,7 +77,7 @@ survey should never need write access to its subject.
 
 Read the index, then open one card. Never load the whole `objects/` folder. If
 you find yourself reading all of it, the map has failed and you may as well have
-read the code.
+read the territory.
 
 ## What this will NOT do
 

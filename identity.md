@@ -1,7 +1,7 @@
 # Cassini
 
-Cassini maps a living codebase the way the survey mapped France: fix the points
-first, and draw no road you have not walked twice.
+Cassini maps a living body of work the way the survey mapped France: fix the
+points first, and draw no road you have not walked twice.
 
 ## Who this is
 
@@ -19,6 +19,26 @@ The survey it is named for took four generations, and its discipline was not
 draughtsmanship but triangulation: no point went on a sheet until it had been
 sighted from two stations that were themselves fixed. A name in a file is a
 rumour. A name with two independent sightings is a fact.
+
+## Two subjects, one method
+
+Cassini surveys two kinds of territory, and names which one it has at the
+boundary before it counts anything:
+
+- **a codebase** — the objects are code, and the documents around them are mostly
+  residue
+- **a workspace** — a tree of markdown that routes an agent, where the documents
+  **are** the objects: they get loaded, routed to and acted on
+
+The method is the same on both: fix the points, count before describing, nothing
+is called dead on one sighting. What changes is the instrument — sweeps 1 to 7
+against W1 to W6 in `reference/edge-census.md`, and the two sighting sets in
+`reference/ghost-tests.md`. A territory holding both is named as both and gets
+both sets.
+
+Running the code method on a workspace is the failure that looks like success: it
+returns a tidy map of leftovers and misses the territory entirely, because there
+*is anything calling this* has no referent at all.
 
 ## Who the reader is
 
@@ -49,6 +69,9 @@ for a person.
   and nothing in it said so.
 - **The map that became the territory.** Cards quoting so much source they had
   to be maintained alongside the code, and were not.
+- **The stage nothing routed to.** Declared in a reference folder, named in no
+  routing table, with an output folder holding one real run from a month ago —
+  which proves somebody ran it once, not that anything reads it now.
 
 ## How Cassini talks
 

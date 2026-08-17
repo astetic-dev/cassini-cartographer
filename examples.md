@@ -9,7 +9,16 @@ check out that sha, and run the sweeps yourself.
 
 The fixture in `sample/hearth` is left unsolved on purpose. If the worked example
 used it, a reader could produce a perfect map by copying this file instead of
-surveying — and the demo would prove nothing.
+surveying — and the demo would prove nothing. `sample/wren` is left unsolved for
+the same reason.
+
+**All four exchanges are on a codebase**, so they show sweeps 1 to 7 and sightings
+1 to 4. Cassini also surveys an ICM workspace, with its own sweeps W1 to W6 and
+sightings W1 to W4; there is no worked exchange for that subject yet. What proves
+it instead is `sample/wren/` and its key, `sample/wren-expected-map.md`, which
+scores 30 seeded facts including the reach values `entry` and `inner`. Read the
+recording block in `reference/edge-census.md` for the shape a workspace census
+prints, and treat the gate discipline below as identical — it is.
 
 ---
 

@@ -53,29 +53,43 @@ Say the gate out loud when you reach it. Do not cross a closed one.
 ### 1 PERIMETER
 
 Establish what the territory is and is not: its boundary (which directories are
-in), whether it is **in force** or **archive**, its entry points, and the
-**do-not-map list** — dependencies, vendored code, generated output, lockfiles,
-build artefacts.
+in), whether it is **in force** or **archive**, its entry points, the **subject**
+— a codebase, a workspace, or both — and the **do-not-map list** — dependencies,
+vendored code, generated output, lockfiles, build artefacts.
+
+The subject is not decoration: it decides which sweep set CENSUS runs and which
+sightings TRIANGULATION uses. A tree of markdown that routes an agent is a
+workspace even when it sits in a repository, and a repository with such a tree
+inside it is both — name both and run both.
 
 > **GATE: BOUNDARY CLOSED** — the boundary is one line, the do-not-map list is
-> named, and the territory is declared in force or archive. After this gate, no
-> file outside the boundary is opened.
+> named, the subject is named, and the territory is declared in force or archive.
+> After this gate, no file outside the boundary is opened.
 
 ### 2 CENSUS
 
-Enumerate **names**, not behaviour, using `reference/edge-census.md`. Registries,
-entry points, call sites, channel pairs, state files, config keys, doc artefacts,
-branches. Output is a raw table: candidate nouns and candidate edges, each with
-an anchor and a count.
+Enumerate **names**, not behaviour, using `reference/edge-census.md`. Run the
+sweep set the subject named at BOUNDARY:
 
-> **GATE: COUNTS ON THE TABLE** — every candidate noun and every candidate edge
-> has a `file:line`, and the totals are stated out loud. **No card may be
-> written while this gate is open.**
+| subject | sweeps | what gets swept |
+|---|---|---|
+| codebase | **1 to 7** | registries, call sites, channel pairs, constructed names, state, config, artefacts |
+| workspace | **W1 to W6** | declarations, routing, load order, standards, handoffs, residue |
+| both | both sets | and sweep 7's verdict is void on the workspace half — `edge-census.md` says why |
+
+Output is a raw table: candidate nouns and candidate edges, each with an anchor
+and a count.
+
+> **GATE: COUNTS ON THE TABLE** — the sweep set is named, every candidate noun
+> and every candidate edge has a `file:line`, and the totals are stated out loud.
+> **No card may be written while this gate is open.**
 
 ### 3 TRIANGULATION
 
-Every name CENSUS could not reference gets the four sightings from
-`reference/ghost-tests.md`. Every repeated token gets the collision protocol from
+Every name CENSUS could not reach gets the four sightings **for this subject**
+from `reference/ghost-tests.md` — a code search finds nothing on a tree of
+markdown, and the sighting that replaces it is not a weaker version of the same
+question. Every repeated token gets the collision protocol from
 `reference/naming-collisions.md`. Output is a verdict table: name, four verdicts,
 status, reach.
 
@@ -133,8 +147,10 @@ written by opening one file, not two.
 
 Two things worth holding in your head while you work. **Status** answers exactly
 one question: *does touching this change behaviour today?* **Reach** is a
-separate axis, and it is what produces a correct `Does not hit` for something no
-interface ever calls.
+separate axis, and it is what produces a correct `Does not hit` for something
+nothing outside the territory ever reaches. Reach is named after the subject's
+outside edge — `ui | internal | both` on a codebase, `entry | inner | both` on a
+workspace — which is one axis in two vocabularies, not six values.
 
 ### The catalog
 

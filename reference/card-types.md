@@ -38,26 +38,46 @@ today?*
 | `leftover` | no, but it did a real job once, and it is honest about being over |
 | `ghost` | no, it never did the job its name claims, and it still looks live |
 
-**Reach** is a separate axis, present only when status is `live`:
+**Reach** is a separate axis, present only when status is `live`. It answers one
+question — *can anything outside the territory get here at all?* — so its values
+are named after the **outside edge of the subject** being mapped:
 
-| reach | meaning |
-|---|---|
-| `ui` | reached from the interface |
-| `internal` | reached only from its own side |
-| `both` | reached from both |
+| subject | reached from the outside surface | reached only from inside | both |
+|---|---|---|---|
+| codebase | `ui` — from the interface | `internal` — only from its own side | `both` |
+| workspace | `entry` — from the **routing surface** | `inner` — only from below it | `both` |
+
+**One triad per subject, and the same axis under two vocabularies** — `entry` is
+to a workspace what `ui` is to a codebase. This is not six values.
+
+A workspace's outside surface is its **routing surface**: the entry file and the
+pipeline file, by any means — a routing row, a trigger row, a standing rule — and
+the harness, which is the outermost case of it and not the only one. `inner` is
+what is reached only from below that line: a stage contract, a `Process` step,
+another reference file, a previous run's output.
+
+**`entry` does not mean "the entry file".** A file *reached from* the entry file is
+`entry` too; the entry file is `entry` because the harness opens it. The value is
+named after the surface, not the file — and it has to be, because a workspace in
+which exactly one file is `entry` has an axis that separates nothing.
+
+On a territory that is both, use the triad of the sweep that reached the noun and
+say which sweep that was in `Moves by`. Workspace reach is decided at sweep W3 in
+`reference/edge-census.md`.
 
 Reach is not a fourth status. It exists because it is what makes `Does not hit`
 correct: for a `live · internal` noun the card must say *changing this does not
-touch the interface — there is no caller there* — and that warning cannot be
-stated without the field.
+touch the interface — there is no caller there*, and for a `live · inner` one
+*nothing routes here from the entry file*. Neither warning can be stated without
+the field.
 
 **Reach describes the noun, not every name inside it.** A noun can be `both`
 while one member of it is reachable only internally — that is common and it is
 often the most useful thing on the card. Put it in `Moves by` as its own row with
 the reach in the direction column (`core → core`), and if it changes what a
 reader should expect, say so in `Does not hit` as well. Do not weaken the noun's
-own Reach to describe one member; the noun's Reach answers *can the interface get
-here at all*.
+own Reach to describe one member; the noun's Reach answers *can anything outside
+the territory get here at all*.
 
 Keep the status triad closed. A fourth value invites a fifth, and then the set
 is no longer closed and the reader can no longer predict it.
@@ -70,7 +90,7 @@ is no longer closed and the reader can no longer predict it.
 # <Noun name>
 Type:     object | channel | surface | store
 Status:   live | leftover | ghost
-Reach:    ui | internal | both          <!-- live only; delete otherwise -->
+Reach:    ui | internal | both          <!-- live only; workspace: entry | inner | both -->
 Verified: <YYYY-MM-DD> at <short-sha>   <!-- or "working tree, uncommitted" -->
 
 ## Is
