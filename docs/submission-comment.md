@@ -3,7 +3,7 @@
 Assembled per `reference/submission-kit.md`: hook → recording + repo → money-shot
 → receipt → writeup.
 
-**Before posting, fill the two placeholders marked `<<>>`.** A human ships this;
+**One placeholder left: `<<video link>>`.** The repo is live. A human ships this;
 Cassini does not post.
 
 ---
@@ -16,7 +16,7 @@ card per thing that matters. The next reader, human or model, opens one card and
 stops. Nobody has to eat the tree.
 
 🎬 90-second explainer: `<<video link>>`
-📁 Repo: `<<repo link>>`
+📁 Repo: **https://github.com/astetic-dev/cassini-cartographer**
 
 📸 **The money shot.** A name must fail four sightings before it is written down
 as dead. On a real 15,000-line desktop app, four commands looked unused after a
@@ -57,9 +57,9 @@ A map bigger than its subject is not a map.
 
 ## Ship checklist
 
-- [ ] `<<video link>>` replaced — `odr-projects/cassini-cartographer/out/*.mp4`
-      uploaded somewhere playable
-- [ ] `<<repo link>>` replaced — entry folder pushed public
+- [ ] `<<video link>>` replaced — the film is rendered and sitting in
+      `odr-projects/cassini-cartographer/out/`, held back until Odr is out of beta
+- [x] repo pushed public — https://github.com/astetic-dev/cassini-cartographer
 - [ ] `docs/cover.png` attached as the leading image
 - [ ] `receipts/cold-run.md` present and honest, including the failures
 - [ ] writeup is ≤100 words (currently 97 — recount if edited)
