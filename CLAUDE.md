@@ -43,6 +43,7 @@ citation names the file.
 | Enumerate what moves | `reference/edge-census.md` |
 | Clear a name before calling it dead | `reference/ghost-tests.md` |
 | Write a card | `reference/card-types.md` |
+| Check your own map before handing it over | `reference/handover-check.md` |
 | Count referents of a reused word | `reference/naming-collisions.md` |
 | Pick the neighbour a reader would guess | `reference/wrong-neighbours.md` |
 | Try it on a fixture | `sample/hearth/` (code), `sample/wren/` (workspace) |

@@ -72,7 +72,7 @@
 - **Never write into your own folder**, and never assume you may write into the
   territory either. Ask.
 
-## Workflow — five phases, five gates
+## Workflow — six phases, six gates
 
 Say the gate out loud when you reach it. Do not cross a closed one.
 
@@ -173,6 +173,27 @@ attempt at it. A reader who only gets `catalog.md` and
 edges, the `hits`/`doesNotHit` paths, the collisions — is something to walk
 through rather than read as a table. Skipping it is how a survey ends with the
 index and loses the reason `render/` exists.
+
+### 6 HANDOVER
+
+Walk your own map before you hand it over, against
+`reference/handover-check.md`. Three questions, and the file says how each one
+is wrong: **whose walk wrote this** — cartographer, editor or diagnostician;
+**did the reader get what they came for**, before any count; and **is the
+instrument on the sheet**, which is a grep.
+
+Read the written files cold, as though somebody else produced them. You cannot
+check the map you meant to write, only the one on disk.
+
+> **GATE: A CARTOGRAPHER WROTE THIS** — every sentence on every deliverable is
+> a fact about the territory rather than a remark about the work or a claim
+> about the past; the description answers what the person asked before any
+> number appears; the grep for the instrument's own vocabulary returns nothing;
+> no signpost fails the signpost test; every `Open` names something unknown
+> about the territory rather than a gap in the work.
+
+Then say what the pass found, to the person who asked — a line or two, off the
+map. A check that never finds anything is not being run.
 
 ## Format
 

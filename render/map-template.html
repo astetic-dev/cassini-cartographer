@@ -422,7 +422,7 @@ footer{margin-top:20px;padding:10px 20px 16px;border-top:1px solid var(--line);
       b.innerHTML =
         '<span class="nm">' + esc(n.name) + "</span>" +
         '<span class="sm">' + esc(n.summary || "") + "</span>" +
-        '<span class="st">' + STATUS_GLYPH[n.status] + " " + esc(n.status) +
+        '<span class="st">' + STATUS_GLYPH[n.status] + " " + esc(plainStatus(n.status)) +
           (n.reach ? " · " + esc(n.reach) : "") + "</span>" +
         '<span class="hop"></span><span class="strike"></span>';
       stage.appendChild(b);

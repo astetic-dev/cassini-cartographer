@@ -65,6 +65,12 @@ Three sentences that must never reach a map, all three observed in a real run:
 - *"Handoffs: nothing found — a real zero, not a gap."* — the method reporting
   on itself. Nobody asked what was searched for.
 
+None of the three was written carelessly, and that is the point: each one is
+what a careful surveyor writes when they stop describing for a sentence. The
+walk that catches them is the last one, over your own sheet, in
+`reference/handover-check.md` — and it is not optional, because the failure
+looks like diligence right up until somebody reads the map.
+
 Each has a describing form, and the describing form is longer. *"`CLAUDE.md` is
 the file the agent opens first. A second file of that name sits in the templates
 folder, blank, waiting to be copied into new work — so the name alone does not
