@@ -41,6 +41,6 @@ in Rust, and nothing checks that the two agree.
   for that noun says what a reader should do about it.
 
 ## Open
-`remote_sessions` is registered and called only from Rust
-(`src-tauri/src/lib.rs:3289`). Whether the registration is deliberate or
-residue cannot be answered from the code.
+`remote_sessions` is in the list and is called only from Rust
+(`src-tauri/src/lib.rs:3289`). What being in the list gives it that its
+neighbours on the Rust side do not have is not answerable from the code.

@@ -37,6 +37,6 @@ output of a remote agent back into a tab in this window.
   through the command surface like any other, whatever machine they run on.
 
 ## Open
-Two commands here are only ever reached through one call that chooses between
-them while running (`src/main.js:1661`). Whether both are still wanted, or one
-is the older way, is not answerable from the code.
+Two commands here are reached through one call that chooses between them while
+running, on where the agent came from (`src/main.js:1661`). What the far side
+does differently for each is not answerable from this file.

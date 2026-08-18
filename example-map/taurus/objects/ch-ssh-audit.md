@@ -36,5 +36,6 @@ same moment on a channel of this name.
   listen for this receives nothing while the events keep arriving on disk.
 
 ## Open
-Whether the announcement was written for a screen that was never built, or for
-one that was removed, is a question about the past and is not answered here.
+Why the event is announced as well as written down is a question about the
+past. It needs a history this map has not asked for, and it is not answered
+here.

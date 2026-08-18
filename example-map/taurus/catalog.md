@@ -34,13 +34,19 @@ which makes them the part of this territory a change has to be most careful
 with.
 
 <div class="callout">
-<span class="label">The list of commands and a search for their names disagree, in both directions.</span>
-`history_forget` sits in the list next to four siblings that all work
-(`src-tauri/src/lib.rs:1447`) and nothing calls it — anything built on top of it
-will look wired and do nothing. In the other direction, two commands are reached
-only through a name assembled while the program runs (`src/main.js:1661`), so a
-search finds their definitions and no caller at all; both run every time
-somebody joins a remote agent.
+<span class="label">Removing a session from the history is a command that goes nowhere.</span>
+`history_forget` sits in the command list next to four siblings that all work
+(`src-tauri/src/lib.rs:1447`) and nothing calls it. It reads as shipped, so
+anything built on top of it will look wired and do nothing.
+
+</div>
+
+<div class="callout">
+<span class="label">Two commands carry a name that is put together while the program runs.</span>
+`join_remote_agent` and `attach_remote_session` are chosen between inside the
+call itself (`src/main.js:1661`), so neither name appears next to a caller
+anywhere. Both run every time somebody joins a remote agent, and a rename that
+goes through the tree by name will pass them by.
 </div>
 
 <div class="callout">
@@ -106,11 +112,12 @@ what was decided, not things a change can reach. And everything under
 (`src/`) and the machine half (`src-tauri/src/`) — on 2026-08-16, at commit
 `e652c79`. The command list holds 73 names; the window calls 69 distinct ones
 across 97 places. Thirteen named channels carry events between the halves:
-eleven have both ends, one is sent and never received, and one looked unsent
-until the sending line was found split across two lines. Four names that nothing
-appeared to call were each checked from four directions: three are in use — two
-of them called by a name built while the program runs, one called only from
-inside Rust — and one, `history_forget`, is not wired. Two words that name more
+eleven have both ends, one is sent and nothing receives it, and one has its
+sending line written across two lines, so the name does not sit beside the call
+that sends it. Four names that nothing appeared to call were each checked from
+four directions: three are in use — two of them called by a name built while the
+program runs, one called only from inside Rust — and one, `history_forget`, is
+not wired. Two words that name more
 than one thing were counted, in `collisions.md`.
 
 **Sixteen things are on the shelf and eight have cards.** On a territory this

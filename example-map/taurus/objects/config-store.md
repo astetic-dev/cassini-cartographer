@@ -38,5 +38,6 @@ only part of Taurus that outlives the code that wrote it.
   file's shape shows up as a broken command rather than as a broken page.
 
 ## Open
-Nothing here migrates an older file to a newer shape on start. Whether that has
-been needed yet is not answerable from the code.
+What a running Taurus does with a file written by an older version is not
+answerable from these paths: they say where each file is, not what is made of a
+field that has since changed shape.

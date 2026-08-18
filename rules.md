@@ -233,7 +233,12 @@ The order is fixed:
    is the map for most of the people who open it, and on some days the only part
    of it they read.
 4. **Signposts**, only those that survive the test below, at most three. None at
-   all is a legal answer, and a common one.
+   all is a legal answer, and a common one. **The collision pointer does not
+   count against the three**: *"session names four things here and forget names
+   three → `collisions.md`"* routes a reader to the right card rather than
+   warning them off a wrong one, and it has a file of its own behind it. Three
+   road signs and a pointer is a map. Four road signs is a snag list with a
+   ceiling.
 5. **The shelf**, headed `## What is here` — one row per noun: its name, a few
    words saying what it is, where it is reached from in plain words, and the
    link to its card. The status triad appears only when a noun is **not** in use

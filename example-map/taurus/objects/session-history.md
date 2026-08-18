@@ -40,5 +40,6 @@ something you were doing yesterday.
   shipped. Nothing removes an entry from this list today.
 
 ## Open
-Whether the list is ever trimmed by anything else - a size cap, a cleanup on
-start - was not found, and its absence is not proof.
+Every write replaces the whole file, so what a very long list costs on a
+machine that has been running Taurus for a year is a real question, and this
+card cannot answer it.

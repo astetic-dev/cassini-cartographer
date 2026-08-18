@@ -39,6 +39,6 @@ needs by name and draws what comes back.
   themselves are real and written to disk; see the ssh-audit card.
 
 ## Open
-Whether the page ever intended to show that trail, or whether writing it to
-disk was always the point, is a question about the past and is not answered
-here.
+What the page does with the twelve channels it does listen for is on the cards
+for the nouns that send them; which of them can arrive while the window is in
+the background is not answerable from here.
