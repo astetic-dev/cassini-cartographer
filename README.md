@@ -63,6 +63,7 @@ still have the map, which is the point.
 
 ```
 catalog.md        the index. Under 60 lines. Read it first.
+catalog.html      the same index, styled — a self-contained page, made every run.
 objects/*.md      one card per thing. Under 40 lines each. Open ONE.
 collisions.md     the words this work uses for more than one thing.
 walks.md          questions grouped by what you want to talk about, with answers.

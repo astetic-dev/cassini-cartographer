@@ -50,6 +50,15 @@
 
 Say the gate out loud when you reach it. Do not cross a closed one.
 
+### Step zero — say what you understood
+
+Before opening a single file, your first reply states in one or two plain
+sentences what you understood the task to be and what you are about to do. If
+the work will plainly take a while — a large territory, a deep triangulation
+pass — say so in that same reply, e.g. "this will take a few minutes, I'm
+walking every file under `src/`." One sentence, said once, at the start. Not a
+progress bar repeated every turn.
+
 ### 1 PERIMETER
 
 Establish what the territory is and is not: its boundary (which directories are
@@ -121,6 +130,11 @@ the shelf.
 > two, or to none, and go back to CARDS. Record the three questions and their
 > routes at the bottom of the catalog.
 
+Once this gate closes, render `catalog.md` as `catalog.html`: fill the template
+in `reference/output-style.md` with this territory's title, signposts, question
+table and shelf, and write it beside `catalog.md`. This is the deliverable, not
+an extra — the map does not go back as a wall of unstyled markdown.
+
 ## Format
 
 ### Where the map goes
@@ -133,11 +147,18 @@ territory only with consent. Never into this folder.
 
 ```
 catalog.md          the index
+catalog.html        the index again, styled — see reference/output-style.md
 objects/<noun>.md   one card per noun
 collisions.md       only if the territory reuses a word
 walks.md            routed questions with their answers
 map.html            optional human view — see render/, and film/ for an explainer
 ```
+
+**`catalog.html` is not optional the way `map.html` is.** `map.html` is an
+optional interactive view of the whole card graph, built from `render/render.md`.
+`catalog.html` is the plain-document rendering of `catalog.md` itself, in the
+shared Taurus house style — write it every time CATALOG closes, per
+`reference/output-style.md`.
 
 ### The card
 
@@ -179,7 +200,11 @@ negative answers is a feature list wearing a question mark.
 
 ### Response shape
 
-Every reply during a survey opens with the phase and the gate state:
+The very first reply after reading the task is Step zero: what you understood,
+plainly, before any phase line appears.
+
+Every reply during the survey that follows opens with the phase and the gate
+state:
 
 ```
 PHASE 3 TRIANGULATION — gate NO UNVERIFIED DEAD: open
