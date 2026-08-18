@@ -7,30 +7,33 @@
 <style>
 :root{
   color-scheme: light dark;
-  --bg:#f4f6fb; --surface:#fdfdff; --surface-alt:#eef2fa;
-  --text:#1c2330; --text-strong:#0f1530; --text-muted:#5c6a86;
-  --accent:#0f6d7e; --accent-dim:#b7e6ee; --line:#d7dfee;
-  --ok:#1f7a4d; --warn:#a8620a;
+  --bg:#e6d8b4; --surface:#f3ead6; --surface-alt:#ecdfc0;
+  --text:#2b2013; --text-strong:#201609; --text-muted:#5b4c34;
+  --accent:#8f6a2c; --accent-dim:#d9b06b; --line:#d4c4a0;
+  --ok:#4f6b42; --warn:#a8620a;
   --beat:600ms; --half-beat:300ms; --stagger:267ms;
   --ease-out:cubic-bezier(.16,1,.3,1); --ease-in-out:cubic-bezier(.65,0,.35,1);
-  --font-head:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  /* System fonts only, on purpose: the sandboxed frame this page runs in
+     blocks external fonts outright (render/render.md, "What the page must
+     not do") - do not add a Google Fonts link here, it will fail silently. */
+  --font-head:Georgia,Cambria,"Times New Roman",Times,serif;
   --font-body:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   --font-mono:"Cascadia Mono",Consolas,"SF Mono",Menlo,monospace;
   --radius:10px; --stroke:2px;
 }
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
-    --bg:#0f1530; --surface:#171f48; --surface-alt:#232d5e;
-    --text:#dfe6f5; --text-strong:#eef3fc; --text-muted:#8290bb;
-    --accent:#3ddced; --accent-dim:#1897ab; --line:#232d5e;
-    --ok:#7ceaf6; --warn:#f0a83c;
+    --bg:#120c05; --surface:#241a10; --surface-alt:#1a1109;
+    --text:#ecdfc0; --text-strong:#f5ecd8; --text-muted:#b8a37d;
+    --accent:#c99b4c; --accent-dim:#8f6a2c; --line:#3a2c18;
+    --ok:#8fbf8f; --warn:#d9a24a;
   }
 }
 :root[data-theme="dark"]{
-  --bg:#0f1530; --surface:#171f48; --surface-alt:#232d5e;
-  --text:#dfe6f5; --text-strong:#eef3fc; --text-muted:#8290bb;
-  --accent:#3ddced; --accent-dim:#1897ab; --line:#232d5e;
-  --ok:#7ceaf6; --warn:#f0a83c;
+  --bg:#120c05; --surface:#241a10; --surface-alt:#1a1109;
+  --text:#ecdfc0; --text-strong:#f5ecd8; --text-muted:#b8a37d;
+  --accent:#c99b4c; --accent-dim:#8f6a2c; --line:#3a2c18;
+  --ok:#8fbf8f; --warn:#d9a24a;
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font-body);
