@@ -39,7 +39,10 @@ edge count is not the site count.
 |---|---|
 | Any live name marked as not wired | **FAIL** — deleting working code is the expensive error, and preventing it is the whole job |
 | Any code fence in `catalog.md` or in any card | **FAIL** — that is photocopying |
-| `catalog.md` over 60 non-blank lines of routing content | **FAIL** |
+| `catalog.md` over 60 non-blank lines of **routing** content — the shelf, the question table, what is not on the shelf | **FAIL** (the description, the survey record and a staleness banner are outside the budget) |
+| `catalog.md` opening with counts, a path, or the word *map* instead of the territory's name and a plain description | **FAIL** — the opening is what most readers read |
+| Any method word on a deliverable — sweep, sighting, gate, triangulation, a W-number, *ghost*, *leftover* | **FAIL** per occurrence |
+| A signpost that is a null result of the survey, a remark on a naming choice, or a live thing described by what does not reach it | **FAIL** per occurrence — that is a review, not a map |
 | The unwired name given without its origin document | **HALF** |
 | A card with no `Does not hit` where one exists | **HALF** per card |
 

@@ -7,7 +7,7 @@
 > 2026-08-18). There is no shared distribution mechanism yet - per `forseti/DEFECTS.md` D3, that is
 > a deliberate, open deferral, not an oversight.
 >
-> **Version: 2026-08-18-v1.** If you change the palette, type, or layout here, the same change is
+> **Version: 2026-08-18-v2.** If you change the palette, type, or layout here, the same change is
 > needed by hand in the other five roles' `reference/output-style.md` until that mechanism exists -
 > bump this line in every copy you touch, so drift is visible rather than silent.
 
@@ -23,30 +23,50 @@ views. Neither replaces the cards.
 ## The template
 
 The tokens `{{NAME}}`, `{{ROLE_NOUN}}` and `{{FIELD_CAPTION}}` are fixed for
-Cassini and are already filled in below — nothing to guess at. Two tokens stay
-open because they are decided at generation time:
+Cassini and are already filled in below — nothing to guess at. The rest are
+decided at generation time:
 
 - **`{{DATE}}`** — the date on `catalog.md`'s own staleness stamp: the day the
   cards behind it were last verified, the same date that appears on the cards
   themselves (`Verified: <date> at <sha>`, `reference/card-types.md`).
 - **`{{SUBJECT_OR_SESSION_ID}}`** — the territory name and the short commit sha
-  it was surveyed at, in the form the catalog already opens with — e.g.
-  `Taurus @ e652c79`. On a workspace subject, use the workspace's name in place
-  of a repo name; there may be no sha, in which case say `working tree`.
-- **`{{DOCUMENT_TITLE}}`** — `Map — <Territory>`, matching the catalog's own
-  first line (see `examples.md`, "**Map — Taurus**").
+  it was surveyed at, e.g. `taurus @ e652c79`. On a workspace subject, use the
+  workspace's name in place of a repo name; there may be no sha, in which case
+  say `working tree`.
+- **`{{DOCUMENT_TITLE}}`** — **the territory's own name and nothing else.**
+  `taurus`. `icm-architect`. Not `Map — taurus`, not the path it was found at,
+  not a subtitle explaining what the page is. The masthead above it already says
+  CASSINI, the cartographer, and the date; a reader who asked for a map does not
+  need to be told they got one. This matches the catalog's own first line.
+- **`{{MAKER}}`** — who made the territory, one line under the title, if the
+  territory itself says: a LICENSE holder, a package manifest author, a README
+  byline, the commit history. Drop the whole `<p class="byline">` if nothing
+  says. Never guess, and never put Cassini's name there — the byline belongs to
+  the work being mapped, not to the map.
 
 The repeatable blocks (`<h2>`, `.callout`, `.lede`, `table`) are not
 one-per-document — use as many of each as `catalog.md` needs. The mapping:
 
+The document order is `rules.md`'s catalog order, unchanged — description before
+signposts, shelf before questions, counts last:
+
 | catalog.md content | template element |
 |---|---|
-| the one/two sentence "what this is" plus the counts line (nouns · commands · channels · collisions · unwired) | `.lede` |
-| the staleness banner, if the territory moved since the cards were verified | one `.callout`, placed **before** the `.lede`, immediately under `<h1>` — matches `reference/card-types.md`'s "does not count against the 60" |
-| each signpost — a road sign, not a snag list | one `.callout` per signpost; `.label` is the bolded lead phrase (e.g. `history_forget is not wired`), the callout body is the rest of the sentence |
-| "If your question is…" | an `<h2>` heading, then a `table` — question in the left column, the card it routes to in the right, as a relative link (`objects/<noun>.md`) since `catalog.html` sits beside `objects/` |
-| the shelf | an `<h2>` heading, then a `table` — noun, type, status, reach, and a relative link to its card |
-| what is not on the shelf | an `<h2>` heading with a short `<p>`, or a closing `.callout` if it is one or two lines |
+| the territory's name | `<h1>` |
+| the maker | `<p class="byline">`, dropped entirely if unknown |
+| **what this is** — the first paragraph | `.lede` |
+| the rest of the description, two to three more paragraphs | plain `<p>` |
+| the staleness banner, if the territory moved since the cards were verified | one `.callout`, placed **before** the `.lede`, immediately under the byline |
+| each signpost — a road sign, not a snag list, none is a normal answer | one `.callout` per signpost; `.label` is the bolded lead phrase, the body is the rest of the sentence |
+| the shelf | an `<h2>` heading, then a `table` — noun, what it is in a few words, where it is reached from in plain words, and a relative link to its card. A noun that is not in use says so in its own row, in words |
+| "If your question is…" | an `<h2>` heading **below the shelf**, then a `table` — question left, the card it routes to right, as a relative link (`objects/<noun>.md`) since `catalog.html` sits beside `objects/` |
+| what is not on the shelf | an `<h2>` heading with a short `<p>` |
+| the survey record | `<div class="record">` at the very bottom — what was walked, what was checked, the date and sha, the one-question test. The only counts on the page. |
+
+**No method vocabulary reaches this page.** Not in the lede, not in a callout,
+not in the record. `rules.md` lists the banned words; the record says *"15 files
+and 792 lines walked; two names checked from four directions, both in use"*,
+never *"sweeps W1-W6 in full, 2 candidates to triangulation"*.
 
 A single card is never expanded into its own Taurus page — a card already has a
 closed schema and a 40-line ceiling (`reference/card-types.md`); wrapping it
@@ -194,14 +214,31 @@ the JSON in `render/render.md` does; nothing here is ever injected as raw HTML.
   .page ul, .page ol{ margin: 0 0 1.1em; padding-left: 1.3em; }
   .page li{ margin: 0.3em 0; }
 
+  .page .byline{
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-style: italic;
+    font-size: 1.05rem;
+    color: var(--ink-soft);
+    margin: 0 0 1.6em;
+  }
+
   .page .lede{
     font-size: 1.08rem;
     color: var(--ink-soft);
     font-style: italic;
     border-left: 2px solid var(--brass);
     padding-left: 0.9em;
-    margin: 0 0 1.8em;
+    margin: 0 0 1.4em;
   }
+
+  .page .record{
+    margin-top: 2.6em;
+    padding-top: 1em;
+    border-top: 1px solid var(--rule);
+    font-size: 0.88rem;
+    color: var(--ink-soft);
+  }
+  .page .record p{ margin: 0 0 0.6em; }
 
   .callout{
     border-left: 2px solid var(--brass);
@@ -262,12 +299,25 @@ the JSON in `render/render.md` does; nothing here is ever injected as raw HTML.
   <div class="page">
 
     <h1>{{DOCUMENT_TITLE}}</h1>
-    <p class="lede">{{One or two sentence summary of the territory, plus the counts line.}}</p>
+    <p class="byline">{{MAKER}}</p>
+
+    <p class="lede">{{What this is — first paragraph. Plain prose, no counts, no method words.}}</p>
+    <p>{{second paragraph — what it does when it runs}}</p>
+    <p>{{third paragraph — what it is for, and how the parts sit together}}</p>
 
     <div class="callout">
       <span class="label">{{signpost lead phrase}}</span>
-      {{the rest of the signpost sentence — one .callout per signpost}}
+      {{the rest of the signpost sentence — one .callout per signpost, none at all if none earns it}}
     </div>
+
+    <hr class="divider">
+
+    <h2>What is here</h2>
+    <table>
+      <tr><th>what</th><th>it is</th><th>reached from</th><th>card</th></tr>
+      <tr><td>{{noun}}</td><td>{{a few words}}</td><td>{{in plain words}}</td>
+          <td><a href="{{relative path}}">{{card}}</a></td></tr>
+    </table>
 
     <hr class="divider">
 
@@ -279,17 +329,13 @@ the JSON in `render/render.md` does; nothing here is ever injected as raw HTML.
 
     <hr class="divider">
 
-    <h2>Shelf</h2>
-    <table>
-      <tr><th>noun</th><th>type</th><th>status</th><th>reach</th><th>card</th></tr>
-      <tr><td>{{noun}}</td><td>{{type}}</td><td>{{status}}</td><td>{{reach}}</td>
-          <td><a href="{{relative path}}">{{card}}</a></td></tr>
-    </table>
-
-    <hr class="divider">
-
     <h2>Not on the shelf</h2>
     <p>{{what was deliberately left off, and why.}}</p>
+
+    <div class="record">
+      <p>{{what was walked, what was checked, the date and the sha — plain sentences}}</p>
+      <p>{{the one-question test: three questions a cold reader would ask, and the single card each routed to}}</p>
+    </div>
 
   </div>
 

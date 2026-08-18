@@ -43,6 +43,8 @@ code,.mono{font-family:var(--font-mono);font-size:.86em}
 header{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;
   padding:16px 20px 12px;border-bottom:1px solid var(--line)}
 .counts{color:var(--text-muted);font-size:13px}
+.maker{color:var(--text-muted);font-size:13px;font-style:italic}
+#back{border-color:var(--accent);color:var(--accent)}
 .counts b{color:var(--text);font-weight:600}
 .spacer{flex:1 1 auto}
 button{font:inherit;color:inherit;background:var(--surface);border:1px solid var(--line);
@@ -68,14 +70,18 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .what .shape{font-family:var(--font-mono);font-size:13px;color:var(--text-muted);
   border-left:3px solid var(--line);padding-left:12px;margin-top:10px}
 
-/* ---- start here: the question table is the front door ---- */
-.ask{padding:14px 20px 4px}
+/* ---- after the map: the questions, and their answers ---- */
+.ask{padding:18px 20px 28px;margin-top:10px;border-top:1px solid var(--line)}
 .ask h2{font-family:var(--font-head);font-size:14px;margin:0 0 8px;color:var(--text-strong)}
 .ask ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;max-width:860px}
 .ask button{display:flex;width:100%;text-align:left;gap:10px;align-items:baseline;
   padding:8px 12px;border-radius:8px}
 .ask .q{flex:1 1 auto}
 .ask .to{font-family:var(--font-mono);font-size:11.5px;color:var(--accent);white-space:nowrap}
+.ask button[aria-current="true"]{border-color:var(--accent);background:var(--surface-alt)}
+.what .more{margin:2px 0 0}
+.what .more summary{cursor:pointer;color:var(--accent);font-size:13.5px}
+.what .more p{margin:8px 0 0}
 .topics{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px}
 .topics button{border-radius:999px;padding:5px 14px;font-size:13.5px}
 .topics button[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);
@@ -195,10 +201,11 @@ footer{margin-top:20px;padding:10px 20px 16px;border-top:1px solid var(--line);
 <body>
 
 <header>
+  <button id="back" hidden>&larr; back to the map</button>
   <h1 id="title">System map</h1>
+  <span class="maker" id="maker" hidden></span>
   <span class="counts" id="counts"></span>
   <span class="spacer"></span>
-  <button id="back" hidden>&larr; map</button>
   <button id="replay" hidden>replay</button>
   <button id="theme">theme</button>
 </header>
@@ -206,8 +213,6 @@ footer{margin-top:20px;padding:10px 20px 16px;border-top:1px solid var(--line);
 <p class="what" id="what" hidden></p>
 
 <section class="warnings" id="warnings" hidden></section>
-
-<section class="ask" id="ask" hidden></section>
 
 <p class="hint" id="hint"></p>
 <div class="legend" id="legend"></div>
@@ -219,6 +224,8 @@ footer{margin-top:20px;padding:10px 20px 16px;border-top:1px solid var(--line);
   <div id="panel"></div>
   <div id="lint"></div>
 </main>
+
+<section class="ask" id="ask" hidden></section>
 
 <p class="sr" id="live" aria-live="polite"></p>
 <footer id="prov"></footer>
@@ -264,7 +271,9 @@ footer{margin-top:20px;padding:10px 20px 16px;border-top:1px solid var(--line);
     }).join("");
     var list = (t.questions || []).map(function (q, i) {
       var n = byId[q.id];
-      return '<li><button data-goto="' + esc(q.id) + '" data-q="' + i + '"><span class="q">' +
+      var here = state.view === "deep" && q.id === state.noun;
+      return '<li><button data-goto="' + esc(q.id) + '" data-q="' + i + '"' +
+        (here ? ' aria-current="true"' : "") + '><span class="q">' +
         esc(q.q) + '</span><span class="to">' + esc(n ? n.name : q.id) + " &rarr;</span></button></li>";
     }).join("");
     host.innerHTML = "<h2>What do you want to talk about?</h2>" +
@@ -339,6 +348,14 @@ footer{margin-top:20px;padding:10px 20px 16px;border-top:1px solid var(--line);
 
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) {
     return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+
+  // The three status values are the machine-readable field. On the page a reader
+  // gets the sentence, never the field value.
+  function plainStatus(v) {
+    return v === "ghost" ? "never wired"
+         : v === "leftover" ? "no longer used"
+         : v === "live" ? "in use" : String(v == null ? "" : v);
+  }
 
   // Escape first, then re-admit exactly two marks: `code` and **bold**. Generated
   // text is still text; nothing here is ever injected as raw HTML.
@@ -530,33 +547,42 @@ footer{margin-top:20px;padding:10px 20px 16px;border-top:1px solid var(--line);
           : "Changing <b>" + esc(n.name) + "</b> moves nothing else on this map." +
             (dnhName ? " Not even <b>" + esc(dnhName) + "</b>, which is the thing most readers expect it to reach." : "")
       ) + "</p><dl>";
-    html += "<dt>is</dt><dd>" + esc(n.summary || "") + "</dd>";
-    html += "<dt>type</dt><dd>" + esc(n.type) + " · " + esc(n.status) +
-      (n.reach ? " · " + esc(n.reach) : "") + "</dd>";
+    html += "<dt>what it is</dt><dd>" + esc(n.summary || "") + "</dd>";
+    html += "<dt>kind</dt><dd>" + esc(n.type) + " · " + esc(plainStatus(n.status)) +
+      (n.reach ? " · reached from " + esc(n.reach) : "") + "</dd>";
     if ((n.hits || []).length) {
-      html += "<dt>hits</dt><dd>" + n.hits.map(function (h) {
+      html += "<dt>what moves with it</dt><dd>" + n.hits.map(function (h) {
         return "<b>" + esc(byId[h.id] ? byId[h.id].name : h.id) + "</b> &mdash; " + esc(h.why);
       }).join("<br>") + "</dd>";
     }
     if (dnh.id) {
-      html += '<dt>does not hit</dt><dd class="no"><b>' + esc(dnhName) + "</b> &mdash; " + esc(dnh.why) + "</dd>";
+      html += '<dt>looks connected, is not</dt><dd class="no"><b>' + esc(dnhName) + "</b> &mdash; " + esc(dnh.why) + "</dd>";
     }
     html += "</dl>";
     (n.dead || []).forEach(function (d) {
-      html += '<div class="dead"><b>' + esc(d.name) + "</b> &mdash; " + esc(d.status) +
+      html += '<div class="dead"><b>' + esc(d.name) + "</b> &mdash; " + esc(plainStatus(d.status)) +
         " &mdash; " + esc(d.at) + (d.why ? " &mdash; " + esc(d.why) : "") + "</div>";
     });
     html += "<p style='margin:10px 0 0;font-size:12.5px;color:var(--text-muted)'>" +
-      "This is a view. The card is " + esc(n.card || "") + ".</p></div>";
+      "This is a view. The card is " + esc(n.card || "") + ".</p>" +
+      "<p style='margin:12px 0 0'><button data-back>&larr; back to the map</button></p></div>";
     host.innerHTML = html;
   }
 
   function render() {
     var stage = document.getElementById("stage");
     stage.setAttribute("data-view", state.view);
+    // The title doubles as the breadcrumb: a reader three clicks in can always
+    // see where they are without hunting for a control in a corner.
+    var here = state.view === "deep" && byId[state.noun] ? byId[state.noun].name : null;
+    document.getElementById("title").textContent =
+      (META.title || "System map") + (here ? " · " + here : "");
     document.getElementById("back").hidden = state.view !== "deep";
     document.getElementById("replay").hidden = state.view !== "deep";
-    if (hasAsk) document.getElementById("ask").hidden = state.view === "deep";
+    // The questions are the way around this page, so they never go away: a
+    // reader inside a card can step straight to another question without
+    // finding their way back to the map first.
+    if (hasAsk) renderTopics();
     document.getElementById("hint").hidden = state.view === "deep";
     if (META.is) document.getElementById("what").hidden = state.view === "deep";
     if (state.view === "deep") { play(state.noun); } else { clearWave(); }
@@ -588,7 +614,12 @@ footer{margin-top:20px;padding:10px 20px 16px;border-top:1px solid var(--line);
 
   // ---- chrome -------------------------------------------------------------
   function chrome() {
-    document.getElementById("title").textContent = (META.title || "System map") + " — system map";
+    document.getElementById("title").textContent = META.title || "System map";
+    if (META.maker) {
+      var mk = document.getElementById("maker");
+      mk.textContent = META.maker;
+      mk.hidden = false;
+    }
     // Dead members are deduped by name: the same ghost is often cited on more
     // than one card (its owning noun, and the surface that registers it). Counting
     // the citations instead of the things is how a view starts disagreeing with
@@ -609,18 +640,23 @@ footer{margin-top:20px;padding:10px 20px 16px;border-top:1px solid var(--line);
     var deadEdges = EDGES.filter(function (e) {
       return e.status === "ghost" && !ghostNames[e.from] && !ghostNames[e.to];
     }).length;
+    // Plain words on the sheet. The field values live in the data; a reader is
+    // never asked to learn 'ghost' and 'leftover' to read their own map.
+    var nGhost = Object.keys(ghostNames).length, nLeft = Object.keys(leftNames).length;
     document.getElementById("counts").innerHTML =
-      "<b>" + NOUNS.length + "</b> nouns · <b>" + EDGES.length + "</b> edges · <b>" +
-      Object.keys(ghostNames).length + "</b> ghost · <b>" +
-      Object.keys(leftNames).length + "</b> leftover" +
-      (deadEdges ? " · <b>" + deadEdges + "</b> dead edge" + (deadEdges === 1 ? "" : "s") : "");
+      "<b>" + NOUNS.length + "</b> part" + (NOUNS.length === 1 ? "" : "s") +
+      " · <b>" + EDGES.length + "</b> connection" + (EDGES.length === 1 ? "" : "s") +
+      (nGhost ? " · <b>" + nGhost + "</b> never wired" : "") +
+      (nLeft ? " · <b>" + nLeft + "</b> no longer used" : "") +
+      (deadEdges ? " · <b>" + deadEdges + "</b> connection" + (deadEdges === 1 ? "" : "s") +
+        " nothing is listening on" : "");
 
     var warn = [], seenWarn = {};
     NOUNS.forEach(function (n) {
       (n.dead || []).forEach(function (d) {
         if (seenWarn[d.name]) return;          // same ghost, cited on two cards
         seenWarn[d.name] = 1;
-        warn.push('<li><span class="tag ghost">' + esc(d.status) + "</span><code>" + esc(d.name) +
+        warn.push('<li><span class="tag ghost">' + esc(plainStatus(d.status)) + "</span><code>" + esc(d.name) +
           "</code> (" + esc(d.at) + ") &mdash; " + esc(d.why || "on the surface, called by nothing") +
           " → <code>" + esc(n.card || "") + "</code></li>");
       });
@@ -643,7 +679,14 @@ footer{margin-top:20px;padding:10px 20px 16px;border-top:1px solid var(--line);
       var w = document.getElementById("what");
       var bits = [];
       if (META.is) bits.push("<p><b>" + esc(META.title || "This") + "</b> " + mark(META.is) + "</p>");
-      (META.explainer || []).forEach(function (para) { bits.push("<p>" + mark(para) + "</p>"); });
+      // The opening paragraph, then the rest folded away. The whole description
+      // is the catalog's job; on this page the map has to stay above the fold,
+      // or the reader scrolls past the thing they came to look at.
+      if (META.explainer && META.explainer.length) {
+        bits.push('<details class="more"><summary>the rest of the description</summary>' +
+          META.explainer.map(function (para) { return "<p>" + mark(para) + "</p>"; }).join("") +
+          "</details>");
+      }
       if (META.shape) bits.push('<p class="shape">' + mark(META.shape) + "</p>");
       w.innerHTML = bits.join("");
       w.hidden = false;
@@ -664,11 +707,16 @@ footer{margin-top:20px;padding:10px 20px 16px;border-top:1px solid var(--line);
       "touch it, and which nearby thing looks connected but is not. The label on a line " +
       "is how the two actually reach each other.";
 
+    var reaches = [];
+    NOUNS.forEach(function (n) { if (n.reach && reaches.indexOf(n.reach) < 0) reaches.push(n.reach); });
     document.getElementById("legend").innerHTML =
-      "<span>● <b>live</b> — changing it changes behaviour today</span>" +
-      "<span>◑ <b>leftover</b> — did a real job once, inert now</span>" +
-      "<span>○ <b>ghost</b> — never wired, still looks live</span>" +
-      "<span><b>ui</b> / <b>internal</b> / <b>both</b> — who can reach it</span>";
+      "<span>● <b>in use</b> — changing it changes what happens today</span>" +
+      (Object.keys(leftNames).length
+        ? "<span>◑ <b>no longer used</b> — did a real job once, inert now</span>" : "") +
+      (Object.keys(ghostNames).length
+        ? "<span>○ <b>never wired</b> — looks finished, nothing calls it</span>" : "") +
+      (reaches.length
+        ? "<span><b>" + reaches.map(esc).join("</b> / <b>") + "</b> — who can reach it</span>" : "");
 
     if (LINT.length) {
       document.getElementById("lint").innerHTML =
@@ -681,9 +729,9 @@ footer{margin-top:20px;padding:10px 20px 16px;border-top:1px solid var(--line);
     }
 
     document.getElementById("prov").textContent =
-      "map.html · view of " + (META.cardsDir || "objects") + "/ (" + NOUNS.length + " cards) · " +
-      "surveyed " + (META.surveyed || "?") + " at " + (META.at || "?") + " · " +
-      "territory " + (META.territoryFiles || "?") + " files, " + (META.territoryLines || "?") + " lines · " +
+      "a view of " + (META.cardsDir || "objects") + "/ — " + NOUNS.length + " cards · " +
+      "walked " + (META.surveyed || "?") + " at " + (META.at || "?") + " · " +
+      (META.territoryFiles || "?") + " files, " + (META.territoryLines || "?") + " lines · " +
       "DO NOT EDIT — regenerate from the cards";
   }
 
@@ -701,7 +749,12 @@ footer{margin-top:20px;padding:10px 20px 16px;border-top:1px solid var(--line);
       go("deep", el.getAttribute("data-goto"), qi === null ? null : parseInt(qi, 10));
       return;
     }
-    if (t.id === "back") { go("overview"); return; }
+    if (t.id === "back" || (t.closest && t.closest("[data-back]"))) { go("overview"); return; }
+    // Three ways back, because one control in one corner is not navigation:
+    // the button, Escape, and clicking the empty page around the diagram.
+    if (state.view === "deep" && (t.id === "stagewrap" || t.id === "stage" || t.id === "wires")) {
+      go("overview"); return;
+    }
     if (t.id === "replay") { play(state.noun); return; }
     if (t.id === "theme") {
       var r = document.documentElement;
@@ -715,6 +768,25 @@ footer{margin-top:20px;padding:10px 20px 16px;border-top:1px solid var(--line);
     if (e.key === "Escape" && state.view === "deep") go("overview");
   });
 
+  // The browser's own back button. `history.pushState` throws in the sandboxed
+  // frame this page has to survive, but writing `location.hash` does not - and
+  // every hash write already leaves a history entry. Reconciling state against
+  // the hash instead of locking a flag makes our own writes a no-op here, so the
+  // handler needs no guard.
+  function fromHash() {
+    try {
+      var m = /^#\/n\/([\w.-]+)$/.exec(location.hash || "");
+      return m && byId[m[1]] ? m[1] : null;
+    } catch (_) { return null; }
+  }
+
+  window.addEventListener("hashchange", function () {
+    var n = fromHash(), want = n ? "deep" : "overview";
+    if (want === state.view && (n || null) === (state.noun || null)) return;
+    state.view = want; state.noun = n; state.q = null;
+    render();
+  });
+
   if (window.ResizeObserver) {
     new ResizeObserver(fit).observe(document.getElementById("stagewrap"));
   } else {
@@ -724,10 +796,8 @@ footer{margin-top:20px;padding:10px 20px 16px;border-top:1px solid var(--line);
 
   build();
   chrome();
-  try {
-    var m = /^#\/n\/([\w.-]+)$/.exec(location.hash || "");
-    if (m && byId[m[1]]) { state.view = "deep"; state.noun = m[1]; }
-  } catch (_) {}
+  var boot = fromHash();
+  if (boot) { state.view = "deep"; state.noun = boot; }
   render();
 
   window.__map = {

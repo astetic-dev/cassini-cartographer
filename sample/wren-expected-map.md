@@ -66,7 +66,10 @@ the edge count is not the site count.
 | `CLAUDE.md` called unreached because nothing names it | **FAIL** - the harness loads the entry file, W4 |
 | `stages/01-tally/output/week-28-tally.md` called a leftover because no path names it | **FAIL** - it is this week's live output |
 | Any code fence in `catalog.md` or in any card | **FAIL** - that is photocopying |
-| `catalog.md` over 60 non-blank lines of routing content | **FAIL** |
+| `catalog.md` over 60 non-blank lines of **routing** content — the shelf, the question table, what is not on the shelf | **FAIL** (the description, the survey record and a staleness banner are outside the budget) |
+| `catalog.md` opening with counts, a path, or the word *map* instead of the territory's name and a plain description | **FAIL** — the opening is what most readers read |
+| Any method word on a deliverable — sweep, sighting, gate, triangulation, a W-number, *ghost*, *leftover* | **FAIL** per occurrence |
+| A signpost that is a null result of the survey, a remark on a naming choice, or a live thing described by what does not reach it | **FAIL** per occurrence — that is a review, not a map |
 | The unrouted stage given without its origin entry in `notes/handover.md` | **HALF** |
 | A card with no `Does not hit` where one exists | **HALF** per card |
 | The registration surface treated as a route - anything called live on the strength of the folder map alone | **HALF** per name |

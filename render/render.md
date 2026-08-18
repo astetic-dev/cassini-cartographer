@@ -1,6 +1,8 @@
 # Rendering a map to HTML
 
-Optional. The cards are the map; this is one way to look at them.
+The cards are the map; this is the way most people will look at it. Built every
+run, once the CATALOG gate closes — `rules.md` requires it and it is assembled
+mechanically from cards already written, so it claims nothing new.
 
 ## Steps
 
@@ -14,7 +16,8 @@ Optional. The cards are the map; this is one way to look at them.
 
 ## The one escaping rule
 
-After serialising, replace every `<` with `<`.
+After serialising, replace every `<` in the JSON with `\u003c` — a legal JSON
+escape that `JSON.parse` turns back into `<`.
 
 A card that cites a closing script tag or an HTML comment would otherwise
 terminate the JSON block and silently truncate the map. Silently is the problem:
@@ -69,12 +72,28 @@ the page still renders, just with fewer nouns.
 
 ### Fields that carry weight
 
-- **`meta.is` — one sentence saying what the territory is.** Without it the page
-  opens on a graph of parts belonging to nothing. A reader who does not know what
-  they are looking at cannot use an accurate diagram of its insides.
-- **`meta.topics` — lenses, and the page's front door.** A reader arrives wanting
-  to talk about *one aspect*: how it is built, what is on screen, what it can do.
-  Group the questions that way. Each question carries three things:
+- **`meta.title` is the territory's own name and nothing else** — `hearth`, not
+  `Map — hearth`, not `hearth system map`. The page does not need to announce
+  that it is a page.
+- **`meta.maker`** — who made the territory, if the territory says so. One line
+  under the title. Omit rather than guess.
+- **`meta.is` and `meta.explainer` — the description, and they are not
+  optional.** The same prose that opens `catalog.md`: `is` is the first
+  paragraph, `explainer` is the two or three that follow. On this page only the
+  first paragraph is open; the rest sits behind a fold, because a page whose
+  diagram starts below the fold has buried the thing it was opened for. The full
+  description belongs to `catalog.md`, which is a document and can afford it. Without them the page
+  opens on a graph of parts belonging to nothing, and a reader who does not know
+  what they are looking at cannot use an accurate diagram of its insides. Plain
+  language throughout — the banned method words in `rules.md` are banned here
+  too.
+- **`meta.topics` — lenses, and where the reader goes after the map.** They sit
+  **below the diagram**, not above it: the map is the thing that was asked for
+  and it goes first; the questions are how you interrogate it once you have seen
+  it. They stay on screen inside a card as well — this list is how a reader
+  moves around the page, and navigation that disappears the moment you use it is
+  not navigation. The question that was followed is marked in place. A reader arrives wanting to talk about *one aspect* — how it is built,
+  what it can do — so group the questions that way. Each question carries three things:
 
   ```json
   { "q": "Where does a terminal tab actually live?",

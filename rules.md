@@ -4,6 +4,20 @@
 
 - **Ask whether the territory is in force before surveying it.** A body of work
   somebody will change gets a map. An archive gets a note saying so.
+- **Open the map with what the thing is, in prose.** Two to four paragraphs
+  before any number, any table and any filename that the sentence can do
+  without: what it is, what it does when it runs, what it is built for, and how
+  the parts sit together. Write it for someone who has never opened the folder.
+  This is the part of the map that gets read.
+- **Say what it is for.** The intent is readable off the territory — what the
+  entry file declares, what the structure makes easy, what the parts are shaped
+  to receive. Say it plainly. Where an intent is declared and does not happen,
+  say both in that order, once: what it is meant to do, then what happens
+  instead. See `identity.md`, "Reading the intent".
+- **Keep the method out of the deliverable.** Sweeps, sightings, gates, phases,
+  triangulation, W-numbers, and the words *ghost* and *leftover* are said during
+  the walk and never written on the sheet. Plain equivalents go on the map:
+  *nothing here calls this*, *checked from four directions*, *no longer used*.
 - **Count before you describe.** Every phase that produces a claim produces a
   number first, said out loud.
 - **Give every claim a `file:line`.** A claim with no anchor is a rumour, and a
@@ -42,6 +56,18 @@
   listens to this, so do not wire to it"* is cartography; *"this is broken"* is
   somebody else's walk. Absence is not a finding either: what a thing does is the
   shape of the territory, what it lacks is not.
+- **Never report your own search.** A sweep that found nothing has found nothing
+  to point at. *"No handoffs found — a real zero, not a gap"* is the instrument
+  talking about itself; the reader never asked what was looked for. If the
+  absence genuinely shapes the territory, describe the shape instead: *"this is
+  the method that other work is built from, not a pipeline that runs."*
+- **Never describe a working thing by what does not reach it.** *"README is
+  live, but outside the routing chain"* leads with a `but` and ends with a
+  negative. It is live: say what it does and who reads it, and let where it is
+  reached from sit on its card in one clause.
+- **Never remark on a naming or layout choice.** A word with two referents gets
+  counted and routed, not commented on. The reader wants to know which one they
+  are holding, not that reusing the word was a decision.
 - **Never describe an example instead of showing it.**
 - **Never write into your own folder**, and never assume you may write into the
   territory either. Ask.
@@ -122,8 +148,9 @@ and the warnings*, not a card for every noun.
 
 ### 5 CATALOG
 
-Write `catalog.md`: counts, warnings, question table, shelf, and what is not on
-the shelf.
+Write `catalog.md` in the order set out under **The catalog** below: the name,
+the maker, what this is in prose, the signposts if any survive, the shelf, the
+question table, what is not on the shelf, and the survey record last.
 
 > **GATE: ONE-QUESTION TEST PASSED** — put three questions a cold reader would
 > actually ask to the catalog. Each must route to **exactly one** card. Route to
@@ -131,14 +158,17 @@ the shelf.
 > routes at the bottom of the catalog.
 
 Once this gate closes, render `catalog.md` as `catalog.html`: fill the template
-in `reference/output-style.md` with this territory's title, signposts, question
-table and shelf, and write it beside `catalog.md`. This is the deliverable, not
+in `reference/output-style.md` with this territory's name, its maker, the
+description, the signposts, the shelf, the question table and the survey record
+— the catalog's own order, unchanged — and write it beside `catalog.md`. This is the deliverable, not
 an extra — the map does not go back as a wall of unstyled markdown.
 
 Then build `map.html`: follow `render/render.md`'s steps — one JSON object from
 the finished `catalog.md` and every card, filled into `render/map-template.html`.
 This is mechanical, not generative: the JSON is assembled from cards already
-written, nothing new is claimed. A reader who only gets `catalog.md` and
+written, nothing new is claimed — the description in `meta.is` and
+`meta.explainer` is the catalog's opening prose, word for word, not a second
+attempt at it. A reader who only gets `catalog.md` and
 `catalog.html` back has the index; `map.html` is where the graph itself — the
 edges, the `hits`/`doesNotHit` paths, the collisions — is something to walk
 through rather than read as a table. Skipping it is how a survey ends with the
@@ -187,16 +217,58 @@ workspace — which is one axis in two vocabularies, not six values.
 
 ### The catalog
 
-At most 60 lines of routing content. One line per noun. Three mandatory blocks
-before the shelf: the counts, the signposts a reader must meet **before** opening
-any card, and the question table that routes them. Then the shelf, then what is
-not on it.
+A reader meets this document first and reads it top to bottom knowing nothing.
+The order is fixed:
 
-**A staleness banner does not count against the 60.** If the territory moved
-since the cards were verified, say so in a block at the very top — old and new
-commit, what changed, which nouns most likely moved. That is a health header, not
-routing; making it compete for the budget would push real content out to make
-room for a warning.
+1. **The name.** The territory's own name, alone, as the first line — `# hearth`.
+   Not `Map — hearth`, not the path it happened to be found at, not the word
+   *map* at all. The masthead above it already says it is a map and who drew it.
+2. **The maker**, if the territory says who that is — one line under the name,
+   taken from a LICENSE, a package manifest, a README byline or the commit
+   history. If nothing says, leave it out rather than guess.
+3. **What this is** — two to four paragraphs of plain prose. No counts, no
+   method words, no filenames the sentence can do without. What it is, what it
+   does when it runs, what it is built for, how the parts sit together, and —
+   where it is readable off the territory — what it is plainly meant to do. This
+   is the map for most of the people who open it, and on some days the only part
+   of it they read.
+4. **Signposts**, only those that survive the test below, at most three. None at
+   all is a legal answer, and a common one.
+5. **The shelf**, headed `## What is here` — one row per noun: its name, a few
+   words saying what it is, where it is reached from in plain words, and the
+   link to its card. The status triad appears only when a noun is **not** in use
+   — then say so in that row, in words (*no longer used*, *never wired*). The
+   field values stay on the card, where a machine reads them.
+6. **If your question is…** — the question table, *under* the shelf. A reader
+   sees what is in the territory, then how to ask about it.
+7. **What is not on the shelf** — one short paragraph.
+8. **The survey record** — last, and the only block on the page that carries
+   counts, dates and a commit sha. Files and lines walked, what was checked, the
+   date and sha the cards were verified at, and the three questions of the
+   one-question test with their routes. Plain sentences, still no method words.
+
+**Budgets.** At most 60 lines of routing content — the shelf, the question table
+and what is not on the shelf. The description, the survey record and a staleness
+banner do not count against it; the budget exists to keep routing short, not to
+make the description compete with a warning for room.
+
+**A staleness banner sits above everything, including the name's own block.** If
+the territory moved since the cards were verified, say so — old and new commit,
+what changed, which nouns most likely moved.
+
+**The signpost test.** A signpost earns its place only if a reader who does not
+know it **builds the wrong thing.** Not *is surprised*, not *would like to
+know* — builds the wrong thing. Write it as what is there, with the consequence
+in the same breath: *"the queue is written by the collector and read by nothing
+else; if you want the totals, read them from the store."*
+
+Three shapes that are never signposts:
+
+- **A null result of your own search.** Nothing was found, so there is nothing
+  to point at.
+- **A live thing described by what does not reach it.** It is in force: describe
+  what it does.
+- **A choice you would have made differently.** Not yours to make.
 
 ### walks.md
 

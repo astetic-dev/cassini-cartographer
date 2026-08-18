@@ -9,6 +9,13 @@ Every card says where it lives, what a change to it touches, and which nearby
 thing looks connected but is not — and carries the day it was checked, so you can
 tell when it has gone stale.
 
+The map opens the way a person would explain the thing out loud: its name, who
+made it, and two or three paragraphs saying what it is, what it does when it
+runs and what it is built for. Counts and dates go at the back. It is a
+description, not a review — no snag list, no remarks on what is missing, and
+nothing about how the survey went. The only thing it will call broken is an
+intention the work states and does not carry out.
+
 ## Start here
 
 **Read `identity.md` and `rules.md` first and follow them as your operating

@@ -32,11 +32,16 @@ Getting the type right is most of getting `Hits` right.
 **Status** answers exactly one question: *does touching this change behaviour
 today?*
 
-| status | meaning |
-|---|---|
-| `live` | yes |
-| `leftover` | no, but it did a real job once, and it is honest about being over |
-| `ghost` | no, it never did the job its name claims, and it still looks live |
+| status | meaning | how it is said in prose |
+|---|---|---|
+| `live` | yes | *in use* |
+| `leftover` | no, but it did a real job once, and it is honest about being over | *no longer used* |
+| `ghost` | no, it never did the job its name claims, and it still looks live | *never wired — it looks finished and nothing calls it* |
+
+The three words are field values, and the field is the machine-readable part of
+a card. **They stay in the field and out of the sentences.** A reader meets
+*never wired*, not *ghost*; a survey run says *ghost* out loud all day and
+writes it down nowhere. Same rule as every other word the instrument uses.
 
 **Reach** is a separate axis, present only when status is `live`. It answers one
 question — *can anything outside the territory get here at all?* — so its values
@@ -94,8 +99,9 @@ Reach:    ui | internal | both          <!-- live only; workspace: entry | inner
 Verified: <YYYY-MM-DD> at <short-sha>   <!-- or "working tree, uncommitted" -->
 
 ## Is
-One sentence. What this is in the system running right now.
-No history. No praise. No assessment of quality.
+One to three plain sentences: what this is in the work as it runs today, what it
+does, and what it is there for. Written for someone who has never seen it.
+No history. No praise. No quality judgement. None of the method's vocabulary.
 
 ## Lives at
 - <path:line> - <role, at most 5 words>

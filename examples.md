@@ -140,24 +140,39 @@ say so — that folder is yours and you are working in it.
 
 ---
 
-**Map — Taurus**
+**taurus**
+*astetic-dev · MIT*
 
-Taurus is an agent launcher. It runs several Claude Code agents as terminal tabs
-in one window, each started in its own folder, and it can start one on another
-machine over SSH.
+Taurus is a desktop application for running several Claude Code agents at the
+same time. Each agent gets a terminal tab in one window, and every tab is
+started in a folder you pick, so two agents working on two projects never see
+each other's files.
 
-Surveyed at `e652c79`. 16 nouns · 73 commands · 13 channels · 2 collisions ·
-2 names that are not wired. Territory 15,897 lines; this map 266.
+Opening it gives you an empty window and a new-tab button. Starting a tab
+launches a real terminal process on the machine and hands it to an agent; the
+tab keeps running while you are looking at another one, and the window comes
+back with the same folders open as when it was closed. A tab can also be started
+on a different machine over SSH — then the terminal is there and the window is
+here, and every connection leaves a trail on disk.
 
-**Signposts — road signs, not a snag list**
+Underneath it is two halves speaking a fixed vocabulary. The window is a web
+page; everything with a process behind it — terminals, files, SSH — is a Rust
+program under it. The page asks for work by name, and those names are the only
+way across. That seam is what the rest of this map is arranged around: change a
+name on one side and the other side has no way to know.
 
-- **`history_forget` is not wired** (`lib.rs:1447`, registered `:5513`). Its four
-  siblings work, so it reads as shipped. **Do not build on it.**
-- **`ssh-audit` has no listener** (`sshhost.rs:173`). The trail it announces is
-  real and written to disk — **the trail is the live thing.**
-- **`join_remote_agent` and `attach_remote_session` are live and invisible to
-  grep** — a ternary at `main.js:1661`. **Do not delete on a search.**
-- **"forget" means 3 things, "session" means 3 things.** → `collisions.md`
+**Before you open a card**
+
+- **Forgetting a session is a button that goes nowhere.** The command sits next
+  to four siblings that all work (`lib.rs:1447`) and nothing calls it. Anything
+  built on top of it will look wired and do nothing.
+- **Two commands are called by a name that is assembled while it runs**
+  (`main.js:1661`). Searching for either name finds where it is defined and no
+  caller at all. Both run every time somebody joins a remote agent.
+- **"forget" means three things here, and "session" means three.** Which one you
+  are holding decides what a change touches → `collisions.md`
+
+*(the shelf, then the question table, then what is not on the shelf)*
 
 **If your question is…**
 
@@ -168,7 +183,13 @@ Surveyed at `e652c79`. 16 nouns · 73 commands · 13 channels · 2 collisions ·
 | how do the two halves talk to each other? | `objects/command-surface.md` |
 | what leaves a trail when someone connects? | `objects/ch-ssh-audit.md` |
 
-*(shelf, and what is not on it, follow)*
+**How this was walked**
+
+15,897 lines across the window and its Rust side, on 2026-08-16 at `e652c79`.
+Four names that nothing appeared to call were each checked from four different
+directions: three of them are in use, one is not wired. Two words that are used
+for more than one thing were counted. Sixteen things are on the shelf; this map
+is 266 lines long.
 
 ---
 
