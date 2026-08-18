@@ -41,10 +41,13 @@ because there *is anything calling this* has nothing to search for.
 
 [`example-map/`](example-map/) is a finished map, copied in whole: the survey of
 [icm-architect](https://github.com/RinDig/icm-architect), a 15-file markdown
-workspace. Open [`example-map/catalog.html`](example-map/catalog.html) for the
-map as a document, or [`example-map/map/map.html`](example-map/map/map.html) to
-walk the same map as a graph — click a part and watch what moves with it. Both
-open in a browser and need nothing installed.
+workspace. Open it as a document
+([in a browser](https://htmlpreview.github.io/?https://github.com/astetic-dev/cassini-cartographer/blob/main/example-map/catalog.html) · [source](example-map/catalog.html)) or walk
+the same map as a graph, clicking a part to see what moves with it
+([in a browser](https://htmlpreview.github.io/?https://github.com/astetic-dev/cassini-cartographer/blob/main/example-map/map/map.html) · [source](example-map/map/map.html)).
+GitHub shows HTML as source, so the browser links go through a preview service;
+clone the repo and double-click either file and you get the same page offline,
+with nothing installed and nothing fetched from the network.
 
 ## Try it in 2 minutes
 

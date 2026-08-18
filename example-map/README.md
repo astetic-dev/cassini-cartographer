@@ -14,8 +14,14 @@ the root `CLAUDE.md` as a working copy that was never committed.
 
 | open | what it is |
 |---|---|
-| [`catalog.html`](catalog.html) | the map as a document: the name, the maker, four paragraphs saying what the thing is, two signposts, what is here, the questions, and the counts at the foot |
-| [`map/map.html`](map/map.html) | the same map as a graph you can walk — click a part, watch what moves with it, and read the answer to the question that brought you there. Needs nothing but a browser |
+| [`catalog.html`](catalog.html) &nbsp;·&nbsp; [**open in a browser**](https://htmlpreview.github.io/?https://github.com/astetic-dev/cassini-cartographer/blob/main/example-map/catalog.html) | the map as a document: the name, the maker, four paragraphs saying what the thing is, two signposts, what is here, the questions, and the counts at the foot |
+| [`map/map.html`](map/map.html) &nbsp;·&nbsp; [**open in a browser**](https://htmlpreview.github.io/?https://github.com/astetic-dev/cassini-cartographer/blob/main/example-map/map/map.html) | the same map as a graph you can walk — click a part, watch what moves with it, and read the answer to the question that brought you there |
+
+**Both are HTML, and GitHub shows HTML as source rather than rendering it.** The
+second link in each row hands the file to a preview service so it opens as a
+page; downloading the repo and double-clicking either file does the same thing
+offline. Neither file loads anything from the network — the map is one
+self-contained page, which is the whole point of it.
 
 `catalog.md` is what `catalog.html` renders. `objects/` holds the eight cards —
 one per thing on the shelf, each with where it lives, what a change to it
