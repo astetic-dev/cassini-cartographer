@@ -105,10 +105,24 @@ worse than an honest empty one, because the reader believes it.
 
 ## The check that catches the error
 
-If the edge table shows a path from the noun to the thing the card says it does
-not hit, the card is wrong — not the table. Either the path is real and it
-belongs in `Hits`, or the path is spurious and the census needs fixing.
+If the edge table shows a **direct edge** from the noun to the thing the card
+says it does not hit, the card is wrong — not the table. Either the edge is real
+and it belongs in `Hits`, or it is spurious and the census needs fixing.
 
 This check is worth running mechanically. It is the single most valuable
 consistency test over a finished map, because a false `Does not hit` sends a
 reader away from something that will in fact break.
+
+**Direct, not reachable — and the difference is not pedantry.** Any territory
+whose halves call each other has a cycle in it: a window calls down, a process
+pushes back up, and the two are joined in both directions. In a cycle every noun
+reaches every other one, so a check run over *paths* condemns every card on the
+map, the correct ones included, and the field has to be left empty on exactly
+the nouns a reader most needs it on — the hubs. Found the hard way, on a
+16-noun map where five nouns reached all the others.
+
+What a card claims is coupling, not reachability: *change this, and that does
+not move with it.* Two nouns joined only by the long way round through a hub are
+not coupled, and saying so is the whole point of the field. Where the long way
+round matters, it is a fact for `Hits` on the hub's own card, which is where a
+reader following the chain will already be.

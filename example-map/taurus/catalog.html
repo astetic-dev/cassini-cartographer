@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>CASSINI — taurus</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:        #f3ead6;
+    --paper-edge:   #e6d8b4;
+    --ink:          #2b2013;
+    --ink-soft:     #5b4c34;
+    --wood-dark:    #201609;
+    --wood-mid:     #34240f;
+    --brass:        #b6893f;
+    --brass-bright: #d9b06b;
+    --rule:         rgba(43,32,19,0.28);
+    --shadow:       rgba(0,0,0,0.35);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --paper:      #241a10;
+      --paper-edge: #1a1109;
+      --ink:        #ecdfc0;
+      --ink-soft:   #b8a37d;
+      --wood-dark:  #120c05;
+      --wood-mid:   #1c130a;
+      --brass:      #c99b4c;
+      --brass-bright:#e6bd76;
+      --rule:       rgba(236,223,192,0.22);
+      --shadow:     rgba(0,0,0,0.6);
+    }
+  }
+
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    background: var(--wood-dark);
+    background-image:
+      radial-gradient(ellipse at 20% -10%, rgba(217,176,106,0.10), transparent 55%),
+      linear-gradient(180deg, var(--wood-dark), var(--wood-mid));
+    color: var(--ink);
+    font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
+    font-size: 18px;
+    line-height: 1.6;
+  }
+
+  /* ---------- masthead ---------- */
+  .masthead{
+    padding: 3.2rem 2rem 2.2rem;
+    text-align: left;
+    max-width: 860px;
+    margin: 0 auto;
+  }
+  .masthead .name{
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-weight: 600;
+    font-size: clamp(2.4rem, 6vw, 3.6rem);
+    letter-spacing: 0.18em;
+    color: var(--brass-bright);
+    text-shadow: 0 1px 0 rgba(0,0,0,0.4), 0 0 24px rgba(217,176,106,0.15);
+    margin: 0;
+    text-transform: uppercase;
+  }
+  .masthead .rule{
+    height: 1px;
+    background: linear-gradient(90deg, var(--brass) 0%, rgba(182,137,63,0.15) 70%, transparent 100%);
+    margin: 0.55em 0 0.7em;
+  }
+  .masthead .role{
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-style: italic;
+    font-weight: 500;
+    font-size: 1.15rem;
+    color: #cabb98;
+    margin: 0 0 0.3em;
+  }
+  .masthead .meta{
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #8a7a5c;
+  }
+
+  /* ---------- page / content card ---------- */
+  .page{
+    max-width: 860px;
+    margin: 0 auto 3rem;
+    background: var(--paper);
+    border: 1px solid var(--paper-edge);
+    box-shadow: 0 20px 50px var(--shadow);
+    border-radius: 2px;
+    padding: 3rem 3.2rem 3.4rem;
+  }
+  @media (max-width: 640px){
+    .page{ padding: 2rem 1.3rem 2.4rem; margin-left:0.6rem; margin-right:0.6rem; }
+    .masthead{ padding: 2.2rem 1.3rem 1.6rem; }
+  }
+
+  .page h1, .page h2, .page h3{
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .page h1{
+    font-size: 1.9rem;
+    letter-spacing: 0.02em;
+    margin: 0 0 0.3em;
+  }
+  .page h2{
+    font-size: 1.35rem;
+    text-transform: uppercase;
+    letter-spacing: 0.10em;
+    color: var(--ink-soft);
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 0.35em;
+    margin: 2.2em 0 0.9em;
+  }
+  .page h2:first-of-type{ margin-top: 0.4em; }
+  .page h3{
+    font-size: 1.1rem;
+    font-style: italic;
+    color: var(--ink);
+    margin: 1.6em 0 0.5em;
+  }
+  .page p{ margin: 0 0 1em; }
+  .page ul, .page ol{ margin: 0 0 1.1em; padding-left: 1.3em; }
+  .page li{ margin: 0.3em 0; }
+
+  .page .byline{
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-style: italic;
+    font-size: 1.05rem;
+    color: var(--ink-soft);
+    margin: 0 0 1.6em;
+  }
+
+  .page .lede{
+    font-size: 1.08rem;
+    color: var(--ink-soft);
+    font-style: italic;
+    border-left: 2px solid var(--brass);
+    padding-left: 0.9em;
+    margin: 0 0 1.4em;
+  }
+
+  .page .record{
+    margin-top: 2.6em;
+    padding-top: 1em;
+    border-top: 1px solid var(--rule);
+    font-size: 0.88rem;
+    color: var(--ink-soft);
+  }
+  .page .record p{ margin: 0 0 0.6em; }
+
+  .callout{
+    border-left: 2px solid var(--brass);
+    background: rgba(182,137,63,0.08);
+    padding: 0.85em 1.1em;
+    margin: 1.2em 0;
+    font-size: 0.98rem;
+  }
+  .callout .label{
+    display:block;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-style: italic;
+    color: var(--brass);
+    margin-bottom: 0.25em;
+  }
+
+  table{ width:100%; border-collapse: collapse; margin: 1.2em 0; font-size: 0.95rem; }
+  th, td{ text-align:left; padding: 0.5em 0.7em; border-bottom: 1px solid var(--rule); }
+  th{ font-family:'Cormorant Garamond', Georgia, serif; text-transform:uppercase; letter-spacing:0.06em; font-size:0.82rem; color: var(--ink-soft); }
+
+  .divider{
+    border: none;
+    border-top: 1px solid var(--rule);
+    margin: 2em 0;
+  }
+
+  .quote-source{
+    display:block;
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    margin-top: 0.4em;
+  }
+
+  footer{
+    max-width: 860px;
+    margin: 0 auto 3rem;
+    padding: 0 3.2rem;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size: 0.72rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #8a7a5c;
+  }
+  footer .rule{ flex:1; height:1px; background:var(--rule); margin: 0 1em; }
+</style>
+</head>
+<body>
+
+  <div class="masthead">
+    <div class="name">CASSINI</div>
+    <div class="rule"></div>
+    <div class="role">the cartographer</div>
+    <div class="meta">2026-08-16 &middot; taurus @ e652c79</div>
+  </div>
+
+  <div class="page">
+
+    <h1>taurus</h1>
+    <p class="byline">Arjen Stet &middot; MIT</p>
+
+    <p class="lede">Taurus is a desktop application for running several Claude Code agents at the
+    same time. Each agent gets a terminal tab in one window, and every tab is started in a folder
+    you pick, so two agents working on two projects never see each other's files.</p>
+
+    <p>Opening it gives you a window with a tab strip. Starting a tab launches a real console
+    process on the machine and hands it to an agent; you type into the tab and what the agent
+    prints comes back into it. Tabs keep running while you look at another one, and the window
+    comes back after a restart with the same folders open, because the open tabs and the history of
+    everything ever started are written to a folder of plain files. A tab can also be started on a
+    different machine over SSH &mdash; then the process is there and the tab is here, the output is
+    mirrored across, and the machine that knocked has to be let in by a person before anything
+    happens. There is voice input, a dropzone for files, and a history you can pick work up
+    from.</p>
+
+    <p>Underneath it is two halves speaking a fixed vocabulary. The window is a web page;
+    everything with a process behind it &mdash; terminals, files, SSH &mdash; is a Rust program
+    under it. The page asks for work by name and draws what comes back, and those 73 names are the
+    only way across. That seam is what this map is arranged around: it is the one place where a
+    change on one side cannot be seen by the other, and where the failure arrives when somebody
+    presses a button rather than when the program starts.</p>
+
+    <p>The state is the other half of the shape. Nothing important is kept in the window: seven
+    files and two folders under <code>%APPDATA%\Taurus</code> hold the projects, the open tabs, the
+    history, the machines allowed to connect and the trail of what they did. Those files outlive
+    any rewrite of the code that wrote them, which makes them the part of this territory a change
+    has to be most careful with.</p>
+
+    <div class="callout">
+      <span class="label">The list of commands and a search for their names disagree, in both directions.</span>
+      <code>history_forget</code> sits in the list next to four siblings that all work
+      (<code>src-tauri/src/lib.rs:1447</code>) and nothing calls it &mdash; anything built on top of
+      it will look wired and do nothing. In the other direction, two commands are reached only
+      through a name assembled while the program runs (<code>src/main.js:1661</code>), so a search
+      finds their definitions and no caller at all; both run every time somebody joins a remote
+      agent.
+    </div>
+
+    <div class="callout">
+      <span class="label">The trail of an SSH connection is on disk, not on the channel that announces it.</span>
+      Every event is appended to a log in the config folder and announced at the same moment on a
+      channel called <code>ssh-audit</code> (<code>src-tauri/src/sshhost.rs:169-173</code>). Nothing
+      in the window listens for it. Read the log &mdash; anything wired to that channel receives
+      nothing while the events keep arriving on disk.
+    </div>
+
+    <div class="callout">
+      <span class="label">&ldquo;session&rdquo; names four different things here, and &ldquo;forget&rdquo; names three.</span>
+      A running tab, a saved tab, work on a remote machine and the agent's own id are all called a
+      session; three unrelated functions are all called forget. Which one you are holding decides
+      what a change touches &rarr; <a href="collisions.md">collisions.md</a>.
+    </div>
+
+    <hr class="divider">
+
+    <h2>What is here</h2>
+    <table>
+      <tr><th>what</th><th>it is</th><th>reached from</th><th>card</th></tr>
+      <tr><td>Command surface</td><td>the 73 names the window may call</td><td>both sides</td><td><a href="objects/command-surface.md">card</a></td></tr>
+      <tr><td>Session</td><td>one terminal tab, in two halves at once</td><td>both sides</td><td><a href="objects/session.md">card</a></td></tr>
+      <tr><td>Session history</td><td>every session ever started, kept in a file</td><td>both sides</td><td><a href="objects/session-history.md">card</a></td></tr>
+      <tr><td>Config store</td><td>the folder that survives a restart</td><td>inside only</td><td><a href="objects/config-store.md">card</a></td></tr>
+      <tr><td>SSH host</td><td>tabs that run on another machine</td><td>both sides</td><td><a href="objects/ssh-host.md">card</a></td></tr>
+      <tr><td>ssh-audit</td><td>the trail of a connection</td><td>inside only</td><td><a href="objects/ch-ssh-audit.md">card</a></td></tr>
+      <tr><td>Peer register</td><td>machines allowed to knock, and the answer given</td><td>both sides</td><td><a href="objects/peer-register.md">card</a></td></tr>
+      <tr><td>The window</td><td>everything on screen</td><td>the interface</td><td><a href="objects/window.md">card</a></td></tr>
+      <tr><td>Projects</td><td>the folders you work in</td><td>both sides</td><td><em>not drawn yet</em></td></tr>
+      <tr><td>Hosts</td><td>the machines you can reach out to</td><td>both sides</td><td><em>not drawn yet</em></td></tr>
+      <tr><td>Branding</td><td>name, colours and logo, resolved from three places</td><td>both sides</td><td><em>not drawn yet</em></td></tr>
+      <tr><td>Discovery</td><td>finding agents on the local network</td><td>both sides</td><td><em>not drawn yet</em></td></tr>
+      <tr><td>Netgate</td><td>what is allowed onto the network</td><td>inside only</td><td><em>not drawn yet</em></td></tr>
+      <tr><td>File transfer</td><td>files moved over an open connection</td><td>both sides</td><td><em>not drawn yet</em></td></tr>
+      <tr><td>Speech to text</td><td>hold a key, speak, get text in the tab</td><td>both sides</td><td><em>not drawn yet</em></td></tr>
+      <tr><td>Capability manifest</td><td>what the window is permitted to do at all</td><td>fixed before start</td><td><em>not drawn yet</em></td></tr>
+    </table>
+
+    <hr class="divider">
+
+    <h2>If your question is&hellip;</h2>
+    <table>
+      <tr><th>question</th><th>open</th></tr>
+      <tr><td>Where does a terminal tab actually live?</td><td><a href="objects/session.md">Session</a></td></tr>
+      <tr><td>How do the two halves talk to each other?</td><td><a href="objects/command-surface.md">Command surface</a></td></tr>
+      <tr><td>What is on disk after I close the window?</td><td><a href="objects/config-store.md">Config store</a></td></tr>
+      <tr><td>Can I remove a session from the history?</td><td><a href="objects/session-history.md">Session history</a></td></tr>
+      <tr><td>What happens when another machine connects?</td><td><a href="objects/ssh-host.md">SSH host</a></td></tr>
+      <tr><td>Who decides whether that machine is let in?</td><td><a href="objects/peer-register.md">Peer register</a></td></tr>
+      <tr><td>What is written down when someone connects?</td><td><a href="objects/ch-ssh-audit.md">ssh-audit</a></td></tr>
+      <tr><td>What do I actually see on screen?</td><td><a href="objects/window.md">The window</a></td></tr>
+    </table>
+
+    <hr class="divider">
+
+    <h2>Not on the shelf</h2>
+    <p><code>src/vendor/</code> and <code>src/fonts/</code> &mdash; the terminal component and the
+    typefaces, both brought in whole from elsewhere. <code>src-tauri/icons/</code> &mdash; 40 image
+    files. The release notes, issues and status documents at the root: 19 documents that record
+    what was decided, not things a change can reach. And everything under
+    <code>src-tauri/target/</code> and <code>node_modules/</code>, which is built rather than
+    written.</p>
+
+    <div class="record">
+      <p><b>How this was walked.</b> 15,897 lines across ten files &mdash; the window
+      (<code>src/</code>) and the machine half (<code>src-tauri/src/</code>) &mdash; on 2026-08-16,
+      at commit <code>e652c79</code>. The command list holds 73 names; the window calls 69 distinct
+      ones across 97 places. Thirteen named channels carry events between the halves: eleven have
+      both ends, one is sent and never received, and one looked unsent until the sending line was
+      found split across two lines. Four names that nothing appeared to call were each checked from
+      four directions: three are in use &mdash; two of them called by a name built while the program
+      runs, one called only from inside Rust &mdash; and one, <code>history_forget</code>, is not
+      wired. Two words that name more than one thing were counted, in
+      <a href="collisions.md">collisions.md</a>.</p>
+      <p><b>Sixteen things are on the shelf and eight have cards.</b> On a territory this size the
+      first walk delivers the index, the warnings, and a card for everything the questions route to;
+      the other eight are drawn on request. Nothing about them is unknown &mdash; they are on the
+      shelf with what they are and where they are reached from.</p>
+      <p><b>Three questions, three cards.</b> &ldquo;Where does a tab live?&rdquo; &rarr; the
+      Session card, and no other. &ldquo;What is left on my disk?&rdquo; &rarr; the Config store
+      card, and no other. &ldquo;Can I clear something out of the history?&rdquo; &rarr; the Session
+      history card, and no other &mdash; where the answer is no.</p>
+    </div>
+
+  </div>
+
+  <footer>
+    <span>TAURUS</span>
+    <span class="rule"></span>
+    <span>MAPPING</span>
+  </footer>
+
+</body>
+</html>
