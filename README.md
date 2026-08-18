@@ -37,6 +37,15 @@ Running the code method on a workspace is the failure that looks like success. I
 comes back with a tidy map of leftovers and misses the territory completely,
 because there *is anything calling this* has nothing to search for.
 
+## See one first
+
+[`example-map/`](example-map/) is a finished map, copied in whole: the survey of
+[icm-architect](https://github.com/RinDig/icm-architect), a 15-file markdown
+workspace. Open [`example-map/catalog.html`](example-map/catalog.html) for the
+map as a document, or [`example-map/map/map.html`](example-map/map/map.html) to
+walk the same map as a graph — click a part and watch what moves with it. Both
+open in a browser and need nothing installed.
+
 ## Try it in 2 minutes
 
 Two fixtures, one per subject. Both work; nothing in either is broken.

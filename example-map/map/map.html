@@ -1,0 +1,811 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>System map</title>
+<style>
+:root{
+  color-scheme: light dark;
+  --bg:#e6d8b4; --surface:#f3ead6; --surface-alt:#ecdfc0;
+  --text:#2b2013; --text-strong:#201609; --text-muted:#5b4c34;
+  --accent:#8f6a2c; --accent-dim:#d9b06b; --line:#d4c4a0;
+  --ok:#4f6b42; --warn:#a8620a;
+  --beat:600ms; --half-beat:300ms; --stagger:267ms;
+  --ease-out:cubic-bezier(.16,1,.3,1); --ease-in-out:cubic-bezier(.65,0,.35,1);
+  /* System fonts only, on purpose: the sandboxed frame this page runs in
+     blocks external fonts outright (render/render.md, "What the page must
+     not do") - do not add a Google Fonts link here, it will fail silently. */
+  --font-head:Georgia,Cambria,"Times New Roman",Times,serif;
+  --font-body:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --font-mono:"Cascadia Mono",Consolas,"SF Mono",Menlo,monospace;
+  --radius:10px; --stroke:2px;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#120c05; --surface:#241a10; --surface-alt:#1a1109;
+    --text:#ecdfc0; --text-strong:#f5ecd8; --text-muted:#b8a37d;
+    --accent:#c99b4c; --accent-dim:#8f6a2c; --line:#3a2c18;
+    --ok:#8fbf8f; --warn:#d9a24a;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#120c05; --surface:#241a10; --surface-alt:#1a1109;
+  --text:#ecdfc0; --text-strong:#f5ecd8; --text-muted:#b8a37d;
+  --accent:#c99b4c; --accent-dim:#8f6a2c; --line:#3a2c18;
+  --ok:#8fbf8f; --warn:#d9a24a;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font-body);
+  font-size:15px;line-height:1.4;min-height:100vh}
+h1{font-family:var(--font-head);font-size:19px;margin:0;letter-spacing:-.01em;color:var(--text-strong)}
+code,.mono{font-family:var(--font-mono);font-size:.86em}
+header{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;
+  padding:16px 20px 12px;border-bottom:1px solid var(--line)}
+.counts{color:var(--text-muted);font-size:13px}
+.maker{color:var(--text-muted);font-size:13px;font-style:italic}
+#back{border-color:var(--accent);color:var(--accent)}
+.counts b{color:var(--text);font-weight:600}
+.spacer{flex:1 1 auto}
+button{font:inherit;color:inherit;background:var(--surface);border:1px solid var(--line);
+  border-radius:6px;padding:4px 10px;cursor:pointer}
+button:hover{border-color:var(--accent)}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* ---- warnings, read before any card ---- */
+.warnings{margin:0;padding:12px 20px;border-bottom:1px solid var(--line);
+  background:var(--surface-alt)}
+.warnings ul{margin:0;padding-left:18px}
+.warnings li{margin:2px 0;font-size:13.5px}
+.tag{display:inline-block;font-family:var(--font-mono);font-size:11px;
+  letter-spacing:.14em;text-transform:uppercase;padding:1px 6px;border-radius:4px;
+  border:1px solid currentColor;margin-right:6px}
+.tag.ghost{color:var(--text-muted)} .tag.collision{color:var(--warn)}
+
+/* ---- orientation: what territory is this? ---- */
+.what{margin:0;padding:14px 20px 0;max-width:860px;color:var(--text)}
+.what p{margin:0 0 8px;font-size:15px;line-height:1.5}
+.what p:first-child{font-size:16.5px}
+.what b{color:var(--text-strong)}
+.what .shape{font-family:var(--font-mono);font-size:13px;color:var(--text-muted);
+  border-left:3px solid var(--line);padding-left:12px;margin-top:10px}
+
+/* ---- after the map: the questions, and their answers ---- */
+.ask{padding:18px 20px 28px;margin-top:10px;border-top:1px solid var(--line)}
+.ask h2{font-family:var(--font-head);font-size:14px;margin:0 0 8px;color:var(--text-strong)}
+.ask ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;max-width:860px}
+.ask button{display:flex;width:100%;text-align:left;gap:10px;align-items:baseline;
+  padding:8px 12px;border-radius:8px}
+.ask .q{flex:1 1 auto}
+.ask .to{font-family:var(--font-mono);font-size:11.5px;color:var(--accent);white-space:nowrap}
+.ask button[aria-current="true"]{border-color:var(--accent);background:var(--surface-alt)}
+.what .more{margin:2px 0 0}
+.what .more summary{cursor:pointer;color:var(--accent);font-size:13.5px}
+.what .more p{margin:8px 0 0}
+.topics{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px}
+.topics button{border-radius:999px;padding:5px 14px;font-size:13.5px}
+.topics button[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);
+  background:var(--surface-alt);font-weight:600}
+.blurb{margin:0 0 10px;font-size:13px;color:var(--text-muted);max-width:860px}
+
+/* ---- the answer: prose the reader came for ---- */
+.answer{margin:0 0 12px;padding:12px 14px;border-left:3px solid var(--accent);
+  background:var(--surface);border-radius:0 8px 8px 0;max-width:860px}
+.answer h3{margin:0 0 6px;font-size:15px;font-family:var(--font-head);color:var(--text-strong)}
+.answer p{margin:0;font-size:14px;line-height:1.5}
+.answer code{background:var(--surface-alt);padding:1px 4px;border-radius:3px}
+
+/* ---- legend ---- */
+.legend{display:flex;flex-wrap:wrap;gap:14px;padding:10px 20px 0;font-size:12.5px;
+  color:var(--text-muted)}
+.legend span b{color:var(--text);font-weight:600}
+.hint{padding:12px 20px 0;font-size:13px;color:var(--text-muted);max-width:760px}
+
+/* ---- stage ---- */
+main{padding:4px 20px 0}
+.elabel{font-family:var(--font-mono);font-size:11px;fill:var(--text-muted);
+  paint-order:stroke;stroke:var(--bg);stroke-width:4px;stroke-linejoin:round}
+.stage[data-view="deep"] .elabel{opacity:.25}
+.stage[data-view="deep"] .elabel[data-wave]{opacity:1;fill:var(--accent)}
+.stage[data-mode="list"] .elabel{display:none}
+.stagewrap{position:relative;overflow:auto}
+.stage{position:relative;transform-origin:0 0}
+.stage svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.edge{fill:none;stroke:var(--line);stroke-width:2}
+.edge[data-st="live"]{stroke:var(--accent);opacity:.55}
+.edge[data-st="leftover"]{stroke:var(--warn);stroke-dasharray:4 2;opacity:.5}
+.edge[data-st="ghost"]{stroke:var(--text-muted);stroke-dasharray:2 5;opacity:.45}
+
+.node{position:absolute;transform:translate(-50%,-50%);width:184px;text-align:left;
+  background:var(--surface);border:var(--stroke) solid var(--line);border-radius:var(--radius);
+  padding:8px 10px;cursor:pointer;transition:opacity .18s}
+.node .nm{display:block;font-weight:600;color:var(--text-strong);font-size:13.5px}
+.node .sm{display:block;color:var(--text-muted);font-size:11.5px;margin-top:2px}
+.node .st{display:inline-flex;align-items:center;gap:4px;font-family:var(--font-mono);
+  font-size:10px;letter-spacing:.12em;text-transform:uppercase;margin-top:5px;color:var(--text-muted)}
+.node[data-st="live"]{border-color:var(--accent)}
+.node[data-st="live"] .st{color:var(--accent)}
+.node[data-st="leftover"]{border-color:var(--warn);
+  background:repeating-linear-gradient(45deg,transparent,transparent 5px,var(--surface-alt) 5px,var(--surface-alt) 10px),var(--surface)}
+.node[data-st="leftover"] .st{color:var(--warn)}
+.node[data-st="ghost"]{border-style:dashed;border-color:var(--text-muted);background:transparent}
+
+/* ---- deep dive ---- */
+.stage[data-view="deep"] .node{opacity:.34}
+.stage[data-view="deep"] .node[data-wave]{opacity:1}
+.stage[data-view="deep"] .node[data-wave="origin"],
+.stage[data-view="deep"] .node[data-wave="hit"]{
+  animation:wave-in var(--beat) var(--ease-out) var(--delay) both}
+@keyframes wave-in{
+  from{opacity:.34;transform:translate(-50%,-50%) scale(1);box-shadow:0 0 0 0 var(--accent)}
+  60%{opacity:1;transform:translate(-50%,-50%) scale(1.04);box-shadow:0 0 0 12px transparent}
+  to{opacity:1;transform:translate(-50%,-50%) scale(1);box-shadow:0 0 0 2px var(--accent)}}
+.stage[data-view="deep"] .edge[data-wave="edge"]{
+  stroke:var(--accent);opacity:1;stroke-dasharray:var(--len);stroke-dashoffset:var(--len);
+  animation:draw var(--half-beat) linear var(--delay) both}
+@keyframes draw{to{stroke-dashoffset:0}}
+.stage[data-view="deep"] .edge[data-wave="stub"]{
+  stroke:var(--text-muted);opacity:.8;stroke-dasharray:var(--len);stroke-dashoffset:var(--len);
+  animation:draw-stub var(--half-beat) var(--ease-out) var(--delay) both}
+@keyframes draw-stub{to{stroke-dashoffset:calc(var(--len) * .55)}}
+.stage[data-view="deep"] .node[data-wave="blocked"]{opacity:.34;
+  animation:refuse var(--beat) var(--ease-in-out) var(--delay) both}
+@keyframes refuse{0%{opacity:.34}30%{opacity:.5;transform:translate(-50%,-50%) translateX(-3px)}
+  55%{opacity:.4;transform:translate(-50%,-50%) translateX(3px)}
+  100%{opacity:.34;transform:translate(-50%,-50%)}}
+.node .strike{position:absolute;left:6px;right:6px;top:50%;height:2px;background:var(--warn);
+  display:none}
+.node[data-wave="blocked"] .strike{display:block;
+  animation:strike var(--half-beat) var(--ease-out) calc(var(--delay) + var(--half-beat)) both}
+@keyframes strike{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+.hop{display:none;font-family:var(--font-mono);font-size:10px;color:var(--text-muted)}
+
+/* ---- list mode ---- */
+.stage[data-mode="list"] svg{display:none}
+.stage[data-mode="list"]{display:flex;flex-direction:column;gap:8px;height:auto!important;transform:none!important}
+.stage[data-mode="list"] .node{position:static;transform:none;width:auto}
+.stage[data-mode="list"] .node[data-wave]{transform:none!important;animation:none!important}
+
+/* ---- card panel ---- */
+.panel{margin:14px 0 0;padding:14px 16px;border:1px solid var(--line);
+  border-radius:var(--radius);background:var(--surface)}
+.panel h2{margin:0 0 2px;font-size:16px;font-family:var(--font-head);color:var(--text-strong)}
+.panel .src{font-family:var(--font-mono);font-size:12px;color:var(--text-muted);cursor:pointer}
+.panel dl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:10px 0 0;font-size:13.5px}
+.panel dt{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--text-muted);padding-top:2px}
+.panel dd{margin:0}
+.panel .no{color:var(--warn)}
+.dead{margin-top:10px;padding:8px 10px;border:1px dashed var(--text-muted);border-radius:6px;
+  font-size:13px}
+
+/* ---- lint + footer ---- */
+.lint{margin:14px 0 0;padding:8px 12px;border:1px solid var(--warn);border-radius:6px;
+  font-size:13px;background:var(--surface)}
+.lint summary{cursor:pointer;color:var(--warn)}
+footer{margin-top:20px;padding:10px 20px 16px;border-top:1px solid var(--line);
+  font-family:var(--font-mono);font-size:11px;color:var(--text-muted)}
+
+@media (prefers-reduced-motion:reduce){
+  .stage *,.stage *::before,.stage *::after{animation:none!important;transition:none!important}
+  .stage[data-view="deep"] .edge[data-wave]{stroke-dashoffset:0}
+  .stage[data-view="deep"] .edge[data-wave="stub"]{stroke-dasharray:6 5;opacity:.55}
+  .stage[data-view="deep"] .node[data-wave="hit"],
+  .stage[data-view="deep"] .node[data-wave="origin"]{opacity:1;box-shadow:0 0 0 2px var(--accent)}
+  .node[data-wave="blocked"] .strike{display:block;clip-path:none}
+  .hop{display:inline}
+}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+</style>
+</head>
+<body>
+
+<header>
+  <button id="back" hidden>&larr; back to the map</button>
+  <h1 id="title">System map</h1>
+  <span class="maker" id="maker" hidden></span>
+  <span class="counts" id="counts"></span>
+  <span class="spacer"></span>
+  <button id="replay" hidden>replay</button>
+  <button id="theme">theme</button>
+</header>
+
+<p class="what" id="what" hidden></p>
+
+<section class="warnings" id="warnings" hidden></section>
+
+<p class="hint" id="hint"></p>
+<div class="legend" id="legend"></div>
+
+<main>
+  <div class="stagewrap" id="stagewrap">
+    <div class="stage" id="stage" data-view="overview"><svg id="wires"></svg></div>
+  </div>
+  <div id="panel"></div>
+  <div id="lint"></div>
+</main>
+
+<section class="ask" id="ask" hidden></section>
+
+<p class="sr" id="live" aria-live="polite"></p>
+<footer id="prov"></footer>
+
+<script type="application/json" id="map-data">{"meta": {"title": "icm-architect", "is": "is a skill — a set of instructions a Claude agent picks up when somebody asks it to turn a way of working into a folder structure that an agent can actually run. Nothing here executes: it is the method itself, written down, in four documents and eight blank starters to copy.", "surveyed": "2026-08-18", "at": "b20fb45", "territoryFiles": 15, "territoryLines": 792, "cardsDir": "objects", "catalog": "catalog.md", "beatMs": 600, "staggerMs": 267, "collisions": [{"word": "CLAUDE.md", "count": 2, "file": "collisions.md"}], "questions": [{"q": "Where do I start reading to understand this workspace?", "id": "root-claude-md", "answer": "At the root `CLAUDE.md`, which names SKILL.md as the method and references/ as the reference material in 18 lines (`CLAUDE.md:8-9`)."}, {"q": "Which of the six forms should I pick for a given piece of work?", "id": "references-forms-md", "answer": "references/forms.md's Selection table matches the repeating unit of work to one of six forms (`references/forms.md:7-18`); System map gets its own deeper reference file."}, {"q": "What naming, token, and contract rules must a stage follow?", "id": "references-core-md", "answer": "references/core.md fixes the five-layer hierarchy, naming conventions, and the 2k-8k token budget per stage (`references/core.md:19-32`, `references/core.md:80-82`)."}, {"q": "How do I audit an existing repo or vault into a walkable map?", "id": "references-system-map-md", "answer": "references/system-map.md's six gated slices, from inventory through re-verify (`references/system-map.md:51-90`)."}, {"q": "Is assets/templates/CLAUDE.md the same file as the real entry point?", "id": "templates", "answer": "No. It is a blank starter opening with the placeholder text `# {Workspace name}` (`assets/templates/CLAUDE.md:1`), unrelated to the root entry file one level up."}, {"q": "Does the root CLAUDE.md route me on to the README?", "id": "readme-md", "answer": "No. Neither `CLAUDE.md` nor `SKILL.md` names README.md anywhere; it is reached only by a human opening the repository on GitHub, which renders it unprompted as the landing page."}, {"q": "What license does this ship under, and where is that recorded?", "id": "license", "answer": "MIT, copyright Jake Van Clief 2026, in the LICENSE file at the root (`LICENSE:1-21`) — named nowhere by path, reached only via GitHub's license-detection convention."}], "maker": "Jake Van Clief · MIT", "explainer": ["Ask it to structure something and it goes in one of two directions. Given a description of work — a process you run every week, a body of knowledge, a problem — it interviews for the shape already present in how you describe it, picks one of six standard forms, and scaffolds the smallest folder tree that carries the work. Given a folder, a repo or a vault that already exists, it inventories everything first, classifies every file, proposes a migration and waits for approval before moving anything. Both directions end at the same test: an agent with no memory must be able to open the root, say where it is, and do the next piece of work from the files alone.", "The idea underneath is that folder structure can carry the orchestration that would otherwise be code. Numbered folders hold the sequence, nesting holds what is in scope, plain markdown holds the state, and one agent reading the right file at the right moment does what a multi-agent framework would do.", "Four files carry all of it. **CLAUDE.md** is the door, eighteen lines long. **SKILL.md** is the method — ten rules, the two modes, the six forms, the walk test. Three reference files sit under it, each opened at a named moment. The templates folder holds the starters, because the method's own tenth rule is that new work begins by copying one."], "shape": "Two files here are called CLAUDE.md: the door at the root, and a blank starter under assets/templates/ waiting to be copied into new work."}, "nouns": [{"id": "root-claude-md", "name": "Root entry (CLAUDE.md)", "type": "object", "status": "live", "reach": "entry", "summary": "Root routing file: names SKILL.md and references/, and blueprints/ as the output destination.", "source": "CLAUDE.md:1", "card": "objects/root-claude-md.md", "hits": [{"id": "skill-md", "why": "the only in-boundary file this entry names besides the references folder", "via": ["e:root-claude-md>skill-md"]}], "doesNotHit": {"id": "readme-md", "why": "root CLAUDE.md never mentions README.md; it is reached only from outside the routing chain"}}, {"id": "skill-md", "name": "SKILL.md (the method)", "type": "object", "status": "live", "reach": "entry", "summary": "Ten invariants, Build/Restructure modes, the walk test, and the routing table into references/ and assets/templates/.", "source": "SKILL.md:1", "card": "objects/skill-md.md", "hits": [{"id": "references-core-md", "why": "names it as the standard for every contract", "via": ["e:skill-md>references-core-md"]}, {"id": "references-forms-md", "why": "routes to it to pick a form", "via": ["e:skill-md>references-forms-md"]}, {"id": "references-system-map-md", "why": "routes to it for the System map form", "via": ["e:skill-md>references-system-map-md"]}, {"id": "templates", "why": "names all 8 starters by bare name and by direct link", "via": ["e:skill-md>templates"]}], "doesNotHit": {"id": "readme-md", "why": "never named here either; installation is README's job, reached only via GitHub"}}, {"id": "references-core-md", "name": "references/core.md", "type": "object", "status": "live", "reach": "inner", "summary": "Five design principles, five-layer hierarchy, naming conventions, token discipline.", "source": "references/core.md:1", "card": "objects/references-core-md.md", "hits": [{"id": "templates", "why": "tells a contract writer to copy stage-CONTEXT.md exactly", "via": ["e:references-core-md>templates"]}], "doesNotHit": {"id": "references-system-map-md", "why": "core.md fixes every contract's shape; system-map.md only governs one form's audit pipeline"}}, {"id": "references-forms-md", "name": "references/forms.md", "type": "object", "status": "live", "reach": "inner", "summary": "The six forms in depth: skeletons, defining moves, failure modes, and how they compose.", "source": "references/forms.md:1", "card": "objects/references-forms-md.md", "hits": [{"id": "references-system-map-md", "why": "its own System map section hands off to it by name", "via": ["e:references-forms-md>references-system-map-md"]}], "doesNotHit": {"id": "references-core-md", "why": "forms.md picks a shape; core.md fixes the rules inside whatever shape got picked"}}, {"id": "references-system-map-md", "name": "references/system-map.md", "type": "object", "status": "live", "reach": "inner", "summary": "The audit pipeline for the System map form: six gated slices, card sections, walk test.", "source": "references/system-map.md:1", "card": "objects/references-system-map-md.md", "hits": [{"id": "templates", "why": "its target tree names object.md and process.md as what an audit copies from", "via": ["e:references-system-map-md>templates"]}], "doesNotHit": {"id": "references-forms-md", "why": "forms.md's System map section is a summary; this file is the operating detail, not a substitute"}}, {"id": "templates", "name": "Templates (assets/templates/, 8 files)", "type": "object", "status": "live", "reach": "inner", "summary": "Eight copyable starters a new workspace is instantiated from; nothing here is edited in place.", "source": "assets/templates/CLAUDE.md:1", "card": "objects/templates.md", "hits": [], "doesNotHit": {"id": "root-claude-md", "why": "assets/templates/CLAUDE.md shares the root entry file's exact name but is an unrelated blank starter"}}, {"id": "readme-md", "name": "README.md", "type": "object", "status": "live", "reach": "inner", "summary": "Human-facing landing page: what ICM is, the two modes, install instructions. Reached only via GitHub.", "source": "README.md:1", "card": "objects/readme-md.md", "hits": [], "doesNotHit": {"id": "root-claude-md", "why": "a reader might expect the root entry to route here next; it never does, README is reached only via GitHub"}}, {"id": "license", "name": "LICENSE", "type": "object", "status": "live", "reach": "inner", "summary": "MIT license text, copyright Jake Van Clief 2026. Named nowhere by path in the territory.", "source": "LICENSE:1", "card": "objects/license.md", "hits": [], "doesNotHit": {"id": "skill-md", "why": "SKILL.md:12 names the license type in prose, not a pointer to this file"}}], "edges": [{"id": "e:root-claude-md>skill-md", "from": "root-claude-md", "to": "skill-md", "kind": "routes", "label": "names SKILL.md", "status": "live", "source": "CLAUDE.md:8"}, {"id": "e:skill-md>references-core-md", "from": "skill-md", "to": "references-core-md", "kind": "routes", "label": "Read core.md", "status": "live", "source": "SKILL.md:107"}, {"id": "e:skill-md>references-forms-md", "from": "skill-md", "to": "references-forms-md", "kind": "routes", "label": "Read forms.md", "status": "live", "source": "SKILL.md:47"}, {"id": "e:skill-md>references-system-map-md", "from": "skill-md", "to": "references-system-map-md", "kind": "routes", "label": "System map form", "status": "live", "source": "SKILL.md:33"}, {"id": "e:skill-md>templates", "from": "skill-md", "to": "templates", "kind": "routes", "label": "Copy starters", "status": "live", "source": "SKILL.md:110"}, {"id": "e:references-core-md>templates", "from": "references-core-md", "to": "templates", "kind": "routes", "label": "copy from stage-CONTEXT.md", "status": "live", "source": "references/core.md:36"}, {"id": "e:references-forms-md>references-system-map-md", "from": "references-forms-md", "to": "references-system-map-md", "kind": "routes", "label": "Method: system-map.md", "status": "live", "source": "references/forms.md:170"}, {"id": "e:references-system-map-md>templates", "from": "references-system-map-md", "to": "templates", "kind": "routes", "label": "object.md, process.md", "status": "live", "source": "references/system-map.md:40"}], "lint": []}</script>
+<script>
+(function () {
+  "use strict";
+  var MAP;
+  try { MAP = JSON.parse(document.getElementById("map-data").textContent); }
+  catch (e) { document.body.innerHTML = "<p style='padding:20px'>map-data is not valid JSON.</p>"; return; }
+
+  var META = MAP.meta || {}, NOUNS = MAP.nouns || [], EDGES = MAP.edges || [], LINT = MAP.lint || [];
+  var BEAT = META.beatMs || 600, STAG = META.staggerMs || 267, HALF = BEAT / 2;
+  var GW = 1600, GH_MIN = 900, GH = GH_MIN, SAFE = 80, NW = 184, NH = 58;
+  var ROW = 96;   // vertical pitch per node: NH plus breathing room
+
+  var byId = {}, edgeById = {};
+  NOUNS.forEach(function (n) { byId[n.id] = n; });
+  EDGES.forEach(function (e) { edgeById[e.id] = e; });
+
+  var STATUS_GLYPH = { live: "●", leftover: "◑", ghost: "○" };
+  var reduceMq = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  // Lenses. A flat meta.questions array still works: it becomes one unnamed lens.
+  var TOPICS = META.topics ||
+    (META.questions ? [{ id: "all", label: "Questions", questions: META.questions }] : []);
+
+  var state = { view: "overview", noun: null, topic: 0, q: null }, hasAsk = false;
+
+  function currentQ() {
+    var t = TOPICS[state.topic];
+    if (!t || state.q == null) return null;
+    return (t.questions || [])[state.q] || null;
+  }
+
+  function renderTopics() {
+    var host = document.getElementById("ask");
+    var t = TOPICS[state.topic] || TOPICS[0];
+    var tabs = TOPICS.map(function (x, i) {
+      return '<button data-topic="' + i + '" aria-pressed="' + (i === state.topic ? "true" : "false") +
+        '">' + esc(x.label) + "</button>";
+    }).join("");
+    var list = (t.questions || []).map(function (q, i) {
+      var n = byId[q.id];
+      var here = state.view === "deep" && q.id === state.noun;
+      return '<li><button data-goto="' + esc(q.id) + '" data-q="' + i + '"' +
+        (here ? ' aria-current="true"' : "") + '><span class="q">' +
+        esc(q.q) + '</span><span class="to">' + esc(n ? n.name : q.id) + " &rarr;</span></button></li>";
+    }).join("");
+    host.innerHTML = "<h2>What do you want to talk about?</h2>" +
+      '<div class="topics">' + tabs + "</div>" +
+      (t.blurb ? '<p class="blurb">' + esc(t.blurb) + "</p>" : "") +
+      "<ul>" + list + "</ul>";
+  }
+  var placed = [], nodeEls = {}, edgeEls = {}, labelEls = {};
+
+  // ---- layout: layered left-to-right, deterministic ------------------------
+  function layout(nouns, edges) {
+    var ix = {}, i;
+    nouns.forEach(function (n, k) { ix[n.id] = k; });
+    var out = nouns.map(function () { return []; });
+    var inn = nouns.map(function () { return []; });
+    var indeg = nouns.map(function () { return 0; });
+    edges.forEach(function (e) {
+      var a = ix[e.from], b = ix[e.to];
+      if (a == null || b == null || a === b) return;
+      out[a].push(b); inn[b].push(a); indeg[b]++;
+    });
+    var rank = nouns.map(function () { return 0; });
+    var guard = nouns.map(function () { return 0; });
+    var stack = [];
+    nouns.forEach(function (_, k) { if (indeg[k] === 0) stack.push(k); });
+    if (!stack.length && nouns.length) stack.push(0);
+    while (stack.length) {
+      var v = stack.pop();
+      if (guard[v]++ > nouns.length) continue;
+      for (i = 0; i < out[v].length; i++) {
+        var w = out[v][i];
+        if (rank[w] < rank[v] + 1) { rank[w] = rank[v] + 1; stack.push(w); }
+      }
+    }
+    var maxRank = 0;
+    rank.forEach(function (r) { if (r > maxRank) maxRank = r; });
+    // an unconnected noun is itself a finding: place it, never hide it
+    nouns.forEach(function (_, k) { if (!out[k].length && !inn[k].length) rank[k] = maxRank + 1; });
+    var cols = [];
+    rank.forEach(function (r, k) { (cols[r] = cols[r] || []).push(k); });
+    var pos = nouns.map(function () { return 0; });
+    cols.forEach(function (c) { c.forEach(function (k, j) { pos[k] = j; }); });
+    for (var sweep = 0; sweep < 2; sweep++) {
+      cols.forEach(function (col) {
+        if (!col) return;
+        col.sort(function (a, b) {
+          var na = out[a].concat(inn[a]), nb = out[b].concat(inn[b]);
+          var ba = na.length ? na.reduce(function (s, j) { return s + pos[j]; }, 0) / na.length : pos[a];
+          var bb = nb.length ? nb.reduce(function (s, j) { return s + pos[j]; }, 0) / nb.length : pos[b];
+          return (ba - bb) || (nouns[a].id < nouns[b].id ? -1 : 1);
+        });
+        col.forEach(function (k, j) { pos[k] = j; });
+      });
+    }
+    // The stage grows to fit the busiest column. A fixed height silently
+    // overlaps nodes as soon as one column gets crowded, and an overlapping
+    // graph is worse than no graph.
+    var maxCol = 1;
+    cols.forEach(function (c) { if (c && c.length > maxCol) maxCol = c.length; });
+    GH = Math.max(GH_MIN, maxCol * ROW + 2 * SAFE);
+
+    var nc = Math.max(cols.length, 1), colW = (GW - 2 * SAFE) / nc;
+    return nouns.map(function (n, k) {
+      var m = cols[rank[k]].length;
+      return {
+        n: n, rank: rank[k], row: pos[k],
+        x: SAFE + colW * (rank[k] + 0.5),
+        y: SAFE + (GH - 2 * SAFE) * ((pos[k] + 0.5) / m)
+      };
+    });
+  }
+
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) {
+    return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+
+  // The three status values are the machine-readable field. On the page a reader
+  // gets the sentence, never the field value.
+  function plainStatus(v) {
+    return v === "ghost" ? "never wired"
+         : v === "leftover" ? "no longer used"
+         : v === "live" ? "in use" : String(v == null ? "" : v);
+  }
+
+  // Escape first, then re-admit exactly two marks: `code` and **bold**. Generated
+  // text is still text; nothing here is ever injected as raw HTML.
+  function mark(s) {
+    return esc(s)
+      .replace(/`([^`]+)`/g, "<code>$1</code>")
+      .replace(/\*\*([^*]+)\*\*/g, "<b>$1</b>");
+  }
+
+  // ---- build the stage once ----------------------------------------------
+  function build() {
+    placed = layout(NOUNS, EDGES);
+    var stage = document.getElementById("stage"), svg = document.getElementById("wires");
+    stage.style.width = GW + "px"; stage.style.height = GH + "px";
+    svg.setAttribute("viewBox", "0 0 " + GW + " " + GH);
+
+    var pos = {};
+    placed.forEach(function (p) { pos[p.n.id] = p; });
+
+    EDGES.forEach(function (e) {
+      var a = pos[e.from], b = pos[e.to];
+      if (!a || !b) return;
+      var path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      var dx = Math.max(40, (b.x - a.x) * 0.45), d;
+      if (b.rank > a.rank) {
+        d = "M" + (a.x + NW / 2) + "," + a.y + " C" + (a.x + NW / 2 + dx) + "," + a.y +
+            " " + (b.x - NW / 2 - dx) + "," + b.y + " " + (b.x - NW / 2) + "," + b.y;
+      } else {
+        d = "M" + a.x + "," + (a.y + NH / 2) + " C" + a.x + "," + (a.y + NH / 2 + 150) +
+            " " + b.x + "," + (b.y + NH / 2 + 150) + " " + b.x + "," + (b.y + NH / 2);
+      }
+      path.setAttribute("d", d);
+      path.setAttribute("class", "edge");
+      path.setAttribute("data-st", e.status || "live");
+      path.setAttribute("data-id", e.id);
+      svg.appendChild(path);
+      try { path.style.setProperty("--len", path.getTotalLength()); } catch (_) {}
+      edgeEls[e.id] = path;
+
+      // the label IS the "how it moves" content. Without it the graph only says
+      // that two things touch, which is the complaint a reader makes first.
+      if (e.label) {
+        var mid = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 - 7 };
+        try { var p = path.getPointAtLength(path.getTotalLength() / 2); mid.x = p.x; mid.y = p.y - 7; }
+        catch (_) {}
+        var tx = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        tx.setAttribute("class", "elabel");
+        tx.setAttribute("x", mid.x); tx.setAttribute("y", mid.y);
+        tx.setAttribute("text-anchor", "middle");
+        tx.setAttribute("data-id", e.id);
+        tx.textContent = e.label;
+        svg.appendChild(tx);
+        labelEls[e.id] = tx;
+      }
+    });
+
+    placed.forEach(function (p) {
+      var n = p.n;
+      var b = document.createElement("button");
+      b.className = "node";
+      b.setAttribute("data-st", n.status);
+      b.setAttribute("data-goto", n.id);
+      b.style.left = p.x + "px"; b.style.top = p.y + "px";
+      b.innerHTML =
+        '<span class="nm">' + esc(n.name) + "</span>" +
+        '<span class="sm">' + esc(n.summary || "") + "</span>" +
+        '<span class="st">' + STATUS_GLYPH[n.status] + " " + esc(n.status) +
+          (n.reach ? " · " + esc(n.reach) : "") + "</span>" +
+        '<span class="hop"></span><span class="strike"></span>';
+      stage.appendChild(b);
+      nodeEls[n.id] = b;
+    });
+  }
+
+  // ---- the wave -----------------------------------------------------------
+  function buildWave(origin) {
+    var nodeRing = {}, edgeRing = {};
+    nodeRing[origin.id] = 0;
+    (origin.hits || []).forEach(function (hit) {
+      var cur = origin.id, d = 0;
+      (hit.via || []).forEach(function (eid) {
+        var e = edgeById[eid];
+        if (!e) return;
+        var next = e.from === cur ? e.to : e.from;
+        if (edgeRing[eid] == null || d < edgeRing[eid]) edgeRing[eid] = d;
+        d += 1;
+        if (nodeRing[next] == null || d < nodeRing[next]) nodeRing[next] = d;
+        cur = next;
+      });
+      if (!(hit.via || []).length && hit.id) {
+        if (nodeRing[hit.id] == null) nodeRing[hit.id] = 1;
+      }
+    });
+    var rings = [];
+    Object.keys(nodeRing).forEach(function (id) {
+      var d = nodeRing[id];
+      (rings[d] = rings[d] || []).push(id);
+    });
+    rings.forEach(function (r) { if (r) r.sort(); });
+    return { rings: rings, edgeRing: edgeRing, nodeRing: nodeRing };
+  }
+
+  function schedule(origin, wave) {
+    var steps = [], settled = 0;
+    wave.rings.forEach(function (ids, d) {
+      if (!ids) return;
+      ids.forEach(function (id, i) {
+        var delay = d * BEAT + Math.min(i, 2) * STAG;
+        if (delay > settled) settled = delay;
+        steps.push({ kind: id === origin.id ? "origin" : "hit", id: id, delay: delay, hop: d });
+      });
+    });
+    Object.keys(wave.edgeRing).forEach(function (eid) {
+      steps.push({ kind: "edge", id: eid, delay: wave.edgeRing[eid] * BEAT + HALF / 2 });
+    });
+    settled += BEAT;
+    var dnh = origin.doesNotHit;
+    if (dnh && dnh.id) {
+      steps.push({ kind: "blocked", id: dnh.id, delay: settled });
+      EDGES.forEach(function (e) {
+        if (e.from === dnh.id || e.to === dnh.id) steps.push({ kind: "stub", id: e.id, delay: settled });
+      });
+    }
+    return { steps: steps, totalMs: settled + 2 * BEAT };
+  }
+
+  function clearWave() {
+    Object.keys(nodeEls).forEach(function (k) {
+      nodeEls[k].removeAttribute("data-wave");
+      nodeEls[k].style.removeProperty("--delay");
+      nodeEls[k].querySelector(".hop").textContent = "";
+    });
+    Object.keys(edgeEls).forEach(function (k) {
+      edgeEls[k].removeAttribute("data-wave");
+      edgeEls[k].style.removeProperty("--delay");
+    });
+    Object.keys(labelEls).forEach(function (k) { labelEls[k].removeAttribute("data-wave"); });
+  }
+
+  function play(originId) {
+    var origin = byId[originId];
+    if (!origin) return;
+    clearWave();
+    void document.getElementById("stage").offsetWidth;
+    var sched = schedule(origin, buildWave(origin));
+    sched.steps.forEach(function (s) {
+      var isEdge = (s.kind === "edge" || s.kind === "stub");
+      var el = isEdge ? edgeEls[s.id] : nodeEls[s.id];
+      if (!el) return;
+      el.style.setProperty("--delay", (reduceMq.matches ? 0 : s.delay) + "ms");
+      el.setAttribute("data-wave", s.kind);
+      if (isEdge && labelEls[s.id]) labelEls[s.id].setAttribute("data-wave", s.kind);
+      if (s.hop != null && el.querySelector) {
+        var h = el.querySelector(".hop");
+        if (h) h.textContent = s.hop === 0 ? "origin" : s.hop + (s.hop === 1 ? " hop" : " hops");
+      }
+    });
+    var dnh = origin.doesNotHit && byId[origin.doesNotHit.id];
+    document.getElementById("live").textContent =
+      origin.name + " hits " + (origin.hits || []).length + " nouns." +
+      (dnh ? " It does not hit " + dnh.name + "." : "");
+  }
+
+  // ---- views --------------------------------------------------------------
+  function renderPanel() {
+    var host = document.getElementById("panel");
+    if (state.view !== "deep") { host.innerHTML = ""; return; }
+    var n = byId[state.noun];
+    if (!n) { host.innerHTML = ""; return; }
+    var dnh = n.doesNotHit || {};
+    var dnhName = byId[dnh.id] ? byId[dnh.id].name : dnh.id;
+    var nHits = (n.hits || []).length;
+    // The answer comes first. A reader who clicked a question wants prose, not a
+    // field list — the card fields are the evidence under it.
+    var q = currentQ();
+    var html = "";
+    if (q && q.answer) {
+      // Escape first, then re-admit backticks as <code>. Never inject the answer
+      // as raw HTML: it is generated text, and generated text still gets escaped.
+      html += '<div class="answer"><h3>' + esc(q.q) + "</h3><p>" + mark(q.answer) + "</p></div>";
+    }
+    html += '<div class="panel"><h2>' + esc(n.name) + "</h2>" +
+      '<span class="src" data-select>' + esc(n.source || "") + " · " + esc(n.card || "") + "</span>" +
+      '<p style="margin:10px 0 0;font-size:14px">' + (
+        nHits
+          ? "If you change <b>" + esc(n.name) + "</b>, <b>" + nHits + "</b> other thing" +
+            (nHits === 1 ? " moves" : "s move") +
+            (dnhName ? " &mdash; but <b>" + esc(dnhName) + "</b> does not, even though it looks like it should." : ".")
+          : "Changing <b>" + esc(n.name) + "</b> moves nothing else on this map." +
+            (dnhName ? " Not even <b>" + esc(dnhName) + "</b>, which is the thing most readers expect it to reach." : "")
+      ) + "</p><dl>";
+    html += "<dt>what it is</dt><dd>" + esc(n.summary || "") + "</dd>";
+    html += "<dt>kind</dt><dd>" + esc(n.type) + " · " + esc(plainStatus(n.status)) +
+      (n.reach ? " · reached from " + esc(n.reach) : "") + "</dd>";
+    if ((n.hits || []).length) {
+      html += "<dt>what moves with it</dt><dd>" + n.hits.map(function (h) {
+        return "<b>" + esc(byId[h.id] ? byId[h.id].name : h.id) + "</b> &mdash; " + esc(h.why);
+      }).join("<br>") + "</dd>";
+    }
+    if (dnh.id) {
+      html += '<dt>looks connected, is not</dt><dd class="no"><b>' + esc(dnhName) + "</b> &mdash; " + esc(dnh.why) + "</dd>";
+    }
+    html += "</dl>";
+    (n.dead || []).forEach(function (d) {
+      html += '<div class="dead"><b>' + esc(d.name) + "</b> &mdash; " + esc(plainStatus(d.status)) +
+        " &mdash; " + esc(d.at) + (d.why ? " &mdash; " + esc(d.why) : "") + "</div>";
+    });
+    html += "<p style='margin:10px 0 0;font-size:12.5px;color:var(--text-muted)'>" +
+      "This is a view. The card is " + esc(n.card || "") + ".</p>" +
+      "<p style='margin:12px 0 0'><button data-back>&larr; back to the map</button></p></div>";
+    host.innerHTML = html;
+  }
+
+  function render() {
+    var stage = document.getElementById("stage");
+    stage.setAttribute("data-view", state.view);
+    // The title doubles as the breadcrumb: a reader three clicks in can always
+    // see where they are without hunting for a control in a corner.
+    var here = state.view === "deep" && byId[state.noun] ? byId[state.noun].name : null;
+    document.getElementById("title").textContent =
+      (META.title || "System map") + (here ? " · " + here : "");
+    document.getElementById("back").hidden = state.view !== "deep";
+    document.getElementById("replay").hidden = state.view !== "deep";
+    // The questions are the way around this page, so they never go away: a
+    // reader inside a card can step straight to another question without
+    // finding their way back to the map first.
+    if (hasAsk) renderTopics();
+    document.getElementById("hint").hidden = state.view === "deep";
+    if (META.is) document.getElementById("what").hidden = state.view === "deep";
+    if (state.view === "deep") { play(state.noun); } else { clearWave(); }
+    renderPanel();
+    fit();
+  }
+
+  function go(view, noun, q) {
+    state.view = view; state.noun = noun || null; state.q = (q == null ? null : q);
+    try { location.hash = view === "deep" ? "/n/" + noun : "/"; } catch (_) {}
+    render();
+  }
+
+  // ---- fit and list mode --------------------------------------------------
+  function fit() {
+    var wrap = document.getElementById("stagewrap"), stage = document.getElementById("stage");
+    var w = wrap.clientWidth || GW;
+    if (w < 640) {
+      stage.setAttribute("data-mode", "list");
+      stage.style.transform = "none";
+      wrap.style.height = "auto";
+      return;
+    }
+    stage.removeAttribute("data-mode");
+    var k = Math.min(1, w / GW);
+    stage.style.transform = "scale(" + k + ")";
+    wrap.style.height = (GH * k) + "px";
+  }
+
+  // ---- chrome -------------------------------------------------------------
+  function chrome() {
+    document.getElementById("title").textContent = META.title || "System map";
+    if (META.maker) {
+      var mk = document.getElementById("maker");
+      mk.textContent = META.maker;
+      mk.hidden = false;
+    }
+    // Dead members are deduped by name: the same ghost is often cited on more
+    // than one card (its owning noun, and the surface that registers it). Counting
+    // the citations instead of the things is how a view starts disagreeing with
+    // its own map.
+    var ghostNames = {};
+    NOUNS.forEach(function (n) {
+      if (n.status === "ghost") ghostNames[n.id] = 1;
+      (n.dead || []).forEach(function (d) { if (d.status === "ghost") ghostNames[d.name] = 1; });
+    });
+    var leftNames = {};
+    NOUNS.forEach(function (n) {
+      if (n.status === "leftover") leftNames[n.id] = 1;
+      (n.dead || []).forEach(function (d) { if (d.status === "leftover") leftNames[d.name] = 1; });
+    });
+    // A dead edge is only its own finding when BOTH endpoints are alive - a live
+    // noun with a dead output. An edge into a ghost node is the same fact as the
+    // ghost node, and counting it twice reads as a contradiction.
+    var deadEdges = EDGES.filter(function (e) {
+      return e.status === "ghost" && !ghostNames[e.from] && !ghostNames[e.to];
+    }).length;
+    // Plain words on the sheet. The field values live in the data; a reader is
+    // never asked to learn 'ghost' and 'leftover' to read their own map.
+    var nGhost = Object.keys(ghostNames).length, nLeft = Object.keys(leftNames).length;
+    document.getElementById("counts").innerHTML =
+      "<b>" + NOUNS.length + "</b> part" + (NOUNS.length === 1 ? "" : "s") +
+      " · <b>" + EDGES.length + "</b> connection" + (EDGES.length === 1 ? "" : "s") +
+      (nGhost ? " · <b>" + nGhost + "</b> never wired" : "") +
+      (nLeft ? " · <b>" + nLeft + "</b> no longer used" : "") +
+      (deadEdges ? " · <b>" + deadEdges + "</b> connection" + (deadEdges === 1 ? "" : "s") +
+        " nothing is listening on" : "");
+
+    var warn = [], seenWarn = {};
+    NOUNS.forEach(function (n) {
+      (n.dead || []).forEach(function (d) {
+        if (seenWarn[d.name]) return;          // same ghost, cited on two cards
+        seenWarn[d.name] = 1;
+        warn.push('<li><span class="tag ghost">' + esc(plainStatus(d.status)) + "</span><code>" + esc(d.name) +
+          "</code> (" + esc(d.at) + ") &mdash; " + esc(d.why || "on the surface, called by nothing") +
+          " → <code>" + esc(n.card || "") + "</code></li>");
+      });
+    });
+    (META.collisions || []).forEach(function (c) {
+      warn.push('<li><span class="tag collision">collision</span><code>' + esc(c.word) +
+        "</code> means " + esc(c.count) + " different things here → <code>" +
+        esc(c.file || "collisions.md") + "</code></li>");
+    });
+    if (warn.length) {
+      var w = document.getElementById("warnings");
+      w.innerHTML = "<strong style='font-size:13px'>Read before any card</strong><ul>" +
+        warn.join("") + "</ul>";
+      w.hidden = false;
+    }
+
+    // Orientation before anything else. A reader who does not know what the
+    // territory IS cannot use a graph of its parts, however accurate.
+    if (META.is || (META.explainer && META.explainer.length)) {
+      var w = document.getElementById("what");
+      var bits = [];
+      if (META.is) bits.push("<p><b>" + esc(META.title || "This") + "</b> " + mark(META.is) + "</p>");
+      // The opening paragraph, then the rest folded away. The whole description
+      // is the catalog's job; on this page the map has to stay above the fold,
+      // or the reader scrolls past the thing they came to look at.
+      if (META.explainer && META.explainer.length) {
+        bits.push('<details class="more"><summary>the rest of the description</summary>' +
+          META.explainer.map(function (para) { return "<p>" + mark(para) + "</p>"; }).join("") +
+          "</details>");
+      }
+      if (META.shape) bits.push('<p class="shape">' + mark(META.shape) + "</p>");
+      w.innerHTML = bits.join("");
+      w.hidden = false;
+    }
+
+    // The front door. A reader arrives with a question, not with a diagram, and
+    // they arrive wanting to talk about ONE aspect. Lenses group the questions;
+    // each question carries the answer, because a highlight on a graph is not an
+    // answer to anything.
+    if (TOPICS.length) {
+      hasAsk = true;
+      document.getElementById("ask").hidden = false;
+      renderTopics();
+    }
+
+    document.getElementById("hint").textContent =
+      "Each box below is something you can change. Click one to see what moves when you " +
+      "touch it, and which nearby thing looks connected but is not. The label on a line " +
+      "is how the two actually reach each other.";
+
+    var reaches = [];
+    NOUNS.forEach(function (n) { if (n.reach && reaches.indexOf(n.reach) < 0) reaches.push(n.reach); });
+    document.getElementById("legend").innerHTML =
+      "<span>● <b>in use</b> — changing it changes what happens today</span>" +
+      (Object.keys(leftNames).length
+        ? "<span>◑ <b>no longer used</b> — did a real job once, inert now</span>" : "") +
+      (Object.keys(ghostNames).length
+        ? "<span>○ <b>never wired</b> — looks finished, nothing calls it</span>" : "") +
+      (reaches.length
+        ? "<span><b>" + reaches.map(esc).join("</b> / <b>") + "</b> — who can reach it</span>" : "");
+
+    if (LINT.length) {
+      document.getElementById("lint").innerHTML =
+        '<details class="lint"><summary>' + LINT.length + " finding" + (LINT.length === 1 ? "" : "s") +
+        " where this view disagrees with the cards</summary><ul>" +
+        LINT.map(function (l) {
+          return "<li><code>" + esc(l.code) + "</code> &mdash; " + esc(l.message) +
+            " &mdash; <code>" + esc(l.at || l.noun || "") + "</code></li>";
+        }).join("") + "</ul></details>";
+    }
+
+    document.getElementById("prov").textContent =
+      "a view of " + (META.cardsDir || "objects") + "/ — " + NOUNS.length + " cards · " +
+      "walked " + (META.surveyed || "?") + " at " + (META.at || "?") + " · " +
+      (META.territoryFiles || "?") + " files, " + (META.territoryLines || "?") + " lines · " +
+      "DO NOT EDIT — regenerate from the cards";
+  }
+
+  // ---- wiring -------------------------------------------------------------
+  document.addEventListener("click", function (ev) {
+    var t = ev.target;
+    var sel = t.closest && t.closest("[data-select]");
+    if (sel) { try { getSelection().selectAllChildren(sel); } catch (_) {} return; }
+    var tp = t.closest && t.closest("[data-topic]");
+    if (tp) { state.topic = parseInt(tp.getAttribute("data-topic"), 10); state.q = null; renderTopics(); return; }
+    var el = t.closest && t.closest("[data-goto]");
+    if (el) {
+      ev.preventDefault();
+      var qi = el.getAttribute("data-q");
+      go("deep", el.getAttribute("data-goto"), qi === null ? null : parseInt(qi, 10));
+      return;
+    }
+    if (t.id === "back" || (t.closest && t.closest("[data-back]"))) { go("overview"); return; }
+    // Three ways back, because one control in one corner is not navigation:
+    // the button, Escape, and clicking the empty page around the diagram.
+    if (state.view === "deep" && (t.id === "stagewrap" || t.id === "stage" || t.id === "wires")) {
+      go("overview"); return;
+    }
+    if (t.id === "replay") { play(state.noun); return; }
+    if (t.id === "theme") {
+      var r = document.documentElement;
+      var now = r.getAttribute("data-theme");
+      r.setAttribute("data-theme", now === "dark" ? "light" : "dark");
+      return;
+    }
+  }, false);
+
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && state.view === "deep") go("overview");
+  });
+
+  // The browser's own back button. `history.pushState` throws in the sandboxed
+  // frame this page has to survive, but writing `location.hash` does not - and
+  // every hash write already leaves a history entry. Reconciling state against
+  // the hash instead of locking a flag makes our own writes a no-op here, so the
+  // handler needs no guard.
+  function fromHash() {
+    try {
+      var m = /^#\/n\/([\w.-]+)$/.exec(location.hash || "");
+      return m && byId[m[1]] ? m[1] : null;
+    } catch (_) { return null; }
+  }
+
+  window.addEventListener("hashchange", function () {
+    var n = fromHash(), want = n ? "deep" : "overview";
+    if (want === state.view && (n || null) === (state.noun || null)) return;
+    state.view = want; state.noun = n; state.q = null;
+    render();
+  });
+
+  if (window.ResizeObserver) {
+    new ResizeObserver(fit).observe(document.getElementById("stagewrap"));
+  } else {
+    window.addEventListener("resize", fit);
+  }
+  if (reduceMq.addEventListener) reduceMq.addEventListener("change", render);
+
+  build();
+  chrome();
+  var boot = fromHash();
+  if (boot) { state.view = "deep"; state.noun = boot; }
+  render();
+
+  window.__map = {
+    layout: function () { return placed; },
+    wave: function (id) { var o = byId[id]; return o ? schedule(o, buildWave(o)) : null; },
+    data: MAP
+  };
+})();
+</script>
+</body>
+</html>

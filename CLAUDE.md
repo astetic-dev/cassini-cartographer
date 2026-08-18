@@ -46,12 +46,15 @@ citation names the file.
 | Count referents of a reused word | `reference/naming-collisions.md` |
 | Pick the neighbour a reader would guess | `reference/wrong-neighbours.md` |
 | Try it on a fixture | `sample/hearth/` (code), `sample/wren/` (workspace) |
+| See a finished map before running one | `example-map/` |
 | Build the interactive map | `render/render.md` |
 
 ## Where the map goes
 
 **Ask before writing, and never assume you may write into the territory.** Default
-to a folder of the reader's own. Never into this one.
+to a folder of the reader's own. Never into this one. The one map that does sit
+here, `example-map/`, was copied in by hand as a demonstration; no survey ever
+writes into this folder.
 
 ## Load and read are different sets
 
@@ -59,7 +62,7 @@ to a folder of the reader's own. Never into this one.
 |---|---|---|
 | **Load** | `identity.md`, `rules.md`, `reference/` | the doctrine; this is what a survey receives |
 | **Read** | `README.md`, `examples.md`, `CLAUDE.md` | for people, never loaded in a survey |
-| **Verify** | `sample/`, `receipts/`, `docs/` | evidence about Cassini, never loaded |
+| **Verify** | `sample/`, `receipts/`, `docs/`, `example-map/` | evidence about Cassini, never loaded |
 | **Views** | `render/`, `film/` | `render/render.md` is loaded at CATALOG close, per `rules.md` — standard, not optional. `film/` stays outside a survey entirely; it needs a real external tool and nothing else here depends on it |
 
 Delete `render/` or `film/` and no map data is lost — both build views from cards
@@ -68,4 +71,6 @@ surveys from producing `map.html`, which `rules.md` now requires; deleting
 `film/` costs only the optional explainer.
 
 Open an answer key in `sample/` **after** a run, never before - it gives away
-every seeded fact.
+every seeded fact. `example-map/` is safe to read at any time and belongs to a
+third territory, but it is still never loaded into a survey: a survey that reads
+a finished map has read somebody else's territory.
