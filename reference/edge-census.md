@@ -1,5 +1,21 @@
 # Edge census - the sweeps, and the lie each one tells
 
+> **Longer than the 200-line reference guardrail, on purpose.** This file reads
+> like two separable halves — sweeps 1-7 for a codebase, W1-W6 for a workspace
+> — but three sections belong to neither half alone: "The sweep set is chosen
+> by subject" (the router that names which set to run, and what a territory
+> that is both must do, which by definition talks about both sets at once),
+> "What counts as one edge" (the definition both sets use — the workspace
+> section restates it rather than re-deriving it), and "Recording the census",
+> whose closing line — "the gap between sweep 1 and sweep 2 is the candidate
+> list, and so is the gap between W1 and W2" — only holds together with both
+> recording blocks in view. Splitting the file would either duplicate that
+> shared third across two files, against this repo's own "one home per fact"
+> rule, or force a reader running one subject to open a second file for a
+> definition the first file needs. Kept as one file for that reason. See
+> `reference/ghost-tests.md` for the sibling file with the same shape and the
+> same call.
+
 How to enumerate what moves without reading the bodies. Run the sweeps that
 apply, state the count from each, and carry the known false result forward.
 

@@ -18,8 +18,14 @@ A map bigger than its subject is not a map.
 
 ---
 
-**97 words**, counted mechanically. An earlier draft claimed 98 and was 117 — the
-count is now checked with a script, not by eye.
+**97 words**, counted mechanically by `checks/count-writeup.py`. An earlier
+draft claimed 98 and was 117 — the count is now checked with a script, not by
+eye. Run it after any edit to the paragraph above; it fails loudly if the
+claim and the count disagree.
+
+This paragraph is its one home. `docs/submission-comment.md` quotes it
+verbatim near its own ship checklist — edit it here first, recount, then copy
+the change there.
 
 ## Why this is the choice worth naming
 

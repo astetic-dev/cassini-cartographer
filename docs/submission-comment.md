@@ -62,6 +62,10 @@ A map bigger than its subject is not a map.
 - [x] repo pushed public — https://github.com/astetic-dev/cassini-cartographer
 - [ ] `docs/cover.png` attached as the leading image
 - [ ] `receipts/cold-run.md` present and honest, including the failures
-- [ ] writeup is ≤100 words (currently 97 — recount if edited)
+- [ ] writeup is ≤100 words (currently 97 — recount with
+      `checks/count-writeup.py` if edited). The closing paragraph above
+      ("Cassini maps a body of work…") is a verbatim copy of `docs/writeup.md`'s
+      writeup — that file is its one home; edit there first and copy the change
+      down here
 - [ ] no internal paths anywhere in the entry (`X:\`, customer names)
 - [ ] a human posts it

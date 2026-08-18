@@ -1,5 +1,16 @@
 # Ghost tests — four sightings, one set per subject
 
+> **Longer than the 200-line reference guardrail, on purpose.** Sightings 1-4
+> and W1-W4 read as two separable halves, but "What carries over, and how to
+> read it" — Verdicts, the origin rule, the anti-test — is written once because
+> it "governs both sets" and is, in the file's own words, "not repeated for the
+> workspace". Splitting the file would force a choice: duplicate that section
+> in both halves, against this repo's own "one home per fact" rule, or leave
+> the workspace half without its own verdicts, origin rule and anti-test, which
+> are load-bearing — a card cannot be written without them. Kept as one file
+> for that reason. See `reference/edge-census.md` for the sibling file with the
+> same shape and the same call.
+
 A name must fail **all four** sightings before it may be written down as dead.
 Record which sightings were run, on the card, in `## Dead here`.
 
