@@ -57,11 +57,27 @@ everything that is prose:
 Zero hits, or fix them.
 
 `map.html` is checked differently, because it is a program: its data block
-carries the three status values by design, and its layout code has a loop
-called a sweep. Read the page instead — the node labels, the legend, the counts
-strip, the panel headings — and confirm the words appear nowhere a reader sees.
-This is where the first run of this check found one: every node on the graph was
-printing its own field value onto the picture. The words belong to the walk, not to the map: a reader
+carries the three status values by design, and its layout code has a loop called
+a sweep. **Look at the page.** Not the source — the rendered picture:
+
+    chrome --headless --disable-gpu --window-size=1600,1500 \
+           --virtual-time-budget=6000 \
+           --screenshot=<somewhere>/map.png file:///<abs path>/map/map.html
+
+Then open the PNG and read it as a stranger would. Two things are being checked
+at once, and only the first is about vocabulary:
+
+- **The words.** Node labels, legend, counts strip, panel headings: none of the
+  instrument's own words may appear. The first run of this check found every
+  node printing its status field onto the picture.
+- **The picture.** Boxes clear of each other, every edge label readable and not
+  lying across a box or another label, no column crushed against the next. The
+  second run found the graph of a territory whose halves call each other piled
+  into a corner, unreadable — a fault no gate had noticed, because every gate
+  reads text and this one is a drawing.
+
+A map nobody can read is not a map, and it does not announce itself: `catalog.md`
+was correct on the same territory, on the same day, at the same commit. The words belong to the walk, not to the map: a reader
 who has to learn the instrument before reading the sheet has been handed the
 instrument. `reference/card-types.md` carries the plain forms.
 

@@ -240,7 +240,7 @@ footer{margin-top:20px;padding:10px 20px 16px;border-top:1px solid var(--line);
 
   var META = MAP.meta || {}, NOUNS = MAP.nouns || [], EDGES = MAP.edges || [], LINT = MAP.lint || [];
   var BEAT = META.beatMs || 600, STAG = META.staggerMs || 267, HALF = BEAT / 2;
-  var GW = 1600, GH_MIN = 900, GH = GH_MIN, SAFE = 80, NW = 184, NH = 58;
+  var GW_MIN = 1600, GW = GW_MIN, GH_MIN = 900, GH = GH_MIN, SAFE = 80, NW = 184, NH = 58;
   var ROW = 96;   // vertical pitch per node: NH plus breathing room
 
   var byId = {}, edgeById = {};
@@ -289,29 +289,59 @@ footer{margin-top:20px;padding:10px 20px 16px;border-top:1px solid var(--line);
     nouns.forEach(function (n, k) { ix[n.id] = k; });
     var out = nouns.map(function () { return []; });
     var inn = nouns.map(function () { return []; });
-    var indeg = nouns.map(function () { return 0; });
     edges.forEach(function (e) {
       var a = ix[e.from], b = ix[e.to];
       if (a == null || b == null || a === b) return;
-      out[a].push(b); inn[b].push(a); indeg[b]++;
+      out[a].push(b); inn[b].push(a);
     });
+
+    // Columns come from a longest-path rank, and that needs a graph with no
+    // cycles. A real territory is never one: the window calls down, the process
+    // pushes back up, and the two close a loop. Walk depth-first and leave out
+    // the edge that closes each loop - for ranking only. Every edge is still
+    // drawn. Without this the rank keeps climbing round the loop until a guard
+    // stops it, and the whole graph ends up crushed into the last few columns,
+    // on top of itself.
+    var colour = nouns.map(function () { return 0; });      // 0 new, 1 on the walk, 2 done
+    var dag = nouns.map(function () { return []; });
+    var seen = nouns.map(function () { return {}; });
+    function walk(v) {
+      colour[v] = 1;
+      out[v].forEach(function (w) {
+        if (colour[w] === 1) return;                        // closes a loop
+        if (!seen[v][w]) { seen[v][w] = 1; dag[v].push(w); }
+        if (colour[w] === 0) walk(w);
+      });
+      colour[v] = 2;
+    }
+    // Start where things start: fewest ways in first, so the entry points of the
+    // territory land on the left rather than whichever noun was written first.
+    nouns.map(function (_, k) { return k; })
+      .sort(function (a, b) { return (inn[a].length - inn[b].length) || (a - b); })
+      .forEach(function (k) { if (colour[k] === 0) walk(k); });
+
+    var indeg = nouns.map(function () { return 0; });
+    dag.forEach(function (list) { list.forEach(function (w) { indeg[w]++; }); });
     var rank = nouns.map(function () { return 0; });
-    var guard = nouns.map(function () { return 0; });
-    var stack = [];
-    nouns.forEach(function (_, k) { if (indeg[k] === 0) stack.push(k); });
-    if (!stack.length && nouns.length) stack.push(0);
-    while (stack.length) {
-      var v = stack.pop();
-      if (guard[v]++ > nouns.length) continue;
-      for (i = 0; i < out[v].length; i++) {
-        var w = out[v][i];
-        if (rank[w] < rank[v] + 1) { rank[w] = rank[v] + 1; stack.push(w); }
-      }
+    var queue = [], head = 0;
+    nouns.forEach(function (_, k) { if (!indeg[k]) queue.push(k); });
+    while (head < queue.length) {
+      var v = queue[head++];
+      dag[v].forEach(function (w) {
+        if (rank[w] < rank[v] + 1) rank[w] = rank[v] + 1;
+        if (--indeg[w] === 0) queue.push(w);
+      });
     }
     var maxRank = 0;
     rank.forEach(function (r) { if (r > maxRank) maxRank = r; });
     // an unconnected noun is itself a finding: place it, never hide it
     nouns.forEach(function (_, k) { if (!out[k].length && !inn[k].length) rank[k] = maxRank + 1; });
+    // Close the gaps. An empty column still takes its share of the width, and
+    // the nouns either side of it get squeezed together to pay for it.
+    var used = [];
+    rank.forEach(function (r) { if (used.indexOf(r) < 0) used.push(r); });
+    used.sort(function (a, b) { return a - b; });
+    rank = rank.map(function (r) { return used.indexOf(r); });
     var cols = [];
     rank.forEach(function (r, k) { (cols[r] = cols[r] || []).push(k); });
     var pos = nouns.map(function () { return 0; });
@@ -335,7 +365,11 @@ footer{margin-top:20px;padding:10px 20px 16px;border-top:1px solid var(--line);
     cols.forEach(function (c) { if (c && c.length > maxCol) maxCol = c.length; });
     GH = Math.max(GH_MIN, maxCol * ROW + 2 * SAFE);
 
-    var nc = Math.max(cols.length, 1), colW = (GW - 2 * SAFE) / nc;
+    // A column narrower than a node is a column of overlapping nodes. Widen the
+    // stage instead - it is scaled to the reader's width on the way out.
+    var nc = Math.max(cols.length, 1);
+    var colW = Math.max(NW + 46, (GW_MIN - 2 * SAFE) / nc);
+    GW = Math.round(2 * SAFE + colW * nc);
     return nouns.map(function (n, k) {
       var m = cols[rank[k]].length;
       return {
@@ -343,6 +377,32 @@ footer{margin-top:20px;padding:10px 20px 16px;border-top:1px solid var(--line);
         x: SAFE + colW * (rank[k] + 0.5),
         y: SAFE + (GH - 2 * SAFE) * ((pos[k] + 0.5) / m)
       };
+    });
+  }
+
+  // A label is the content of an edge - it says HOW two things reach each other -
+  // so it may not be dropped when it collides. Nudge it clear instead: off the
+  // nodes first, then off the labels already placed. Found by screenshotting a
+  // finished map and reading it, which is the only way this kind of fault shows.
+  function deconflictLabels() {
+    var boxes = placed.map(function (p) {
+      return { x0: p.x - NW / 2 - 6, x1: p.x + NW / 2 + 6, y0: p.y - 54, y1: p.y + 54 };
+    });
+    function clashes(b) {
+      return boxes.some(function (o) {
+        return !(b.x1 < o.x0 || b.x0 > o.x1 || b.y1 < o.y0 || b.y0 > o.y1);
+      });
+    }
+    Object.keys(labelEls).forEach(function (k) {
+      var t = labelEls[k];
+      var w = (t.textContent || "").length * 6.7, h = 15;
+      var x = parseFloat(t.getAttribute("x")) || 0, y = parseFloat(t.getAttribute("y")) || 0;
+      var steps = [0, -20, 20, -40, 40, -62, 62, -84, 84, -108, 108];
+      for (var i = 0; i < steps.length; i++) {
+        var yy = y + steps[i];
+        var b = { x0: x - w / 2, x1: x + w / 2, y0: yy - h, y1: yy + 5 };
+        if (!clashes(b) || i === steps.length - 1) { t.setAttribute("y", yy); boxes.push(b); break; }
+      }
     });
   }
 
@@ -375,7 +435,7 @@ footer{margin-top:20px;padding:10px 20px 16px;border-top:1px solid var(--line);
     var pos = {};
     placed.forEach(function (p) { pos[p.n.id] = p; });
 
-    EDGES.forEach(function (e) {
+    EDGES.forEach(function (e, ei) {
       var a = pos[e.from], b = pos[e.to];
       if (!a || !b) return;
       var path = document.createElementNS("http://www.w3.org/2000/svg", "path");
@@ -398,8 +458,12 @@ footer{margin-top:20px;padding:10px 20px 16px;border-top:1px solid var(--line);
       // the label IS the "how it moves" content. Without it the graph only says
       // that two things touch, which is the complaint a reader makes first.
       if (e.label) {
+        // Not all at the midpoint: edges that share a pair of endpoints put
+        // their labels in the same spot, and two labels in one spot are one
+        // unreadable label.
+        var frac = 0.5 + (((ei % 3) - 1) * 0.13);
         var mid = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 - 7 };
-        try { var p = path.getPointAtLength(path.getTotalLength() / 2); mid.x = p.x; mid.y = p.y - 7; }
+        try { var p = path.getPointAtLength(path.getTotalLength() * frac); mid.x = p.x; mid.y = p.y - 7; }
         catch (_) {}
         var tx = document.createElementNS("http://www.w3.org/2000/svg", "text");
         tx.setAttribute("class", "elabel");
@@ -428,6 +492,8 @@ footer{margin-top:20px;padding:10px 20px 16px;border-top:1px solid var(--line);
       stage.appendChild(b);
       nodeEls[n.id] = b;
     });
+
+    deconflictLabels();
   }
 
   // ---- the wave -----------------------------------------------------------
