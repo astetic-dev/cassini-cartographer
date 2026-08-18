@@ -42,6 +42,22 @@ render it; only the command names change.
 Everything spoken must already be a claim on a card. If a line of narration says
 something no card says, the card is missing a fact — fix the card, not the script.
 
+## Two worked examples
+
+Both films in `example-map/` are this shape, rendered from the maps beside them:
+
+| film | subject | three stations |
+|---|---|---|
+| `example-map/taurus/film/` | a codebase | the window → 73 names → what survives a restart |
+| `example-map/icm-architect/film/` | a workspace | how you describe it → the method → a folder that runs |
+
+Each folder carries `brief.md`, `board.md` and one payload per scene — the whole
+input, so the render is reproducible from the map and this file alone. Read
+`board.md` first: the `#### NOTE` under every scene names the card the line came
+from, which is what "everything spoken is already on a card" looks like when it
+is being obeyed. One line in the second film had no card behind it; the card
+gained the anchor, per the rule above.
+
 ## The shape that works
 
 Three stations carry an entire explainer, and they are the same three every time:
@@ -80,9 +96,14 @@ status "1"  text "appended line per email"    ->  1 appended line per email
 A `status` of 200 with unrelated text produces `200 appended line per email`,
 which is how the first draft of this went wrong.
 
-Put badge annotations at `at_pct: 0.16`. The packet travels and lands around
-0.4–0.7, and a badge in that band lands on top of it. Add `layout-occlusion` to
-`qc_focus` on every `flow-rails` scene so the check catches it if you forget.
+Put badge annotations at `at_pct: 0.28`. Two things are already on that rail and
+a badge has to miss both: the packet travels and lands around 0.4–0.7, and the
+rail's own label — `REQUEST`, `COMES BACK` — sits hard left. A badge is centred
+on its `at_pct`, so 0.16 reaches back across the label and prints a badge over
+the word; 0.28 clears the label and still lands well before the packet. Add
+`layout-occlusion` to `qc_focus` on every `flow-rails` scene, and look at the
+frames the render drops in `qc/` — this one was found there, in a finished cut,
+with the gate passed and the label reading *COMES B*.
 
 ## Sizing the narration
 

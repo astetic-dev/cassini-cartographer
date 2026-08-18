@@ -1,0 +1,73 @@
+{
+  "template": "flow-rails",
+  "stations": [
+    {
+      "id": "window",
+      "title": "The window",
+      "sub": "the page you look at",
+      "col": 0
+    },
+    {
+      "id": "surface",
+      "title": "73 names",
+      "sub": "the only way across",
+      "col": 1
+    },
+    {
+      "id": "disk",
+      "title": "What survives",
+      "sub": "files outside the program",
+      "col": 2
+    }
+  ],
+  "rails": [
+    {
+      "id": "call",
+      "label": "ASKED FOR",
+      "role": "accent",
+      "position": "top"
+    },
+    {
+      "id": "back",
+      "label": "COMES BACK",
+      "role": "ok",
+      "position": "bottom"
+    }
+  ],
+  "step": {
+    "n": "4",
+    "from": "surface",
+    "to": "disk",
+    "via": null,
+    "caption": "Open tabs and history are written whole",
+    "request": {
+      "method": "WRITE",
+      "path": "sessions.json",
+      "mono": true
+    },
+    "response": {
+      "status": "7",
+      "text": "files outlive the code that wrote them"
+    },
+    "reverse": false,
+    "beats": [
+      "station-highlight",
+      "packet-out",
+      "packet-return",
+      "caption-in"
+    ]
+  },
+  "annotations": [
+    {
+      "kind": "badge",
+      "at_pct": 0.28,
+      "text": "%APPDATA%\\Taurus",
+      "role": "accent",
+      "hold_s": 3.0
+    }
+  ],
+  "progress_hint": {
+    "step_index": 4,
+    "step_total": 4
+  }
+}

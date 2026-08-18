@@ -1,0 +1,18 @@
+{
+  "template": "takeaway-split",
+  "heading": "Before you change anything",
+  "points": [
+    {
+      "label": "history_forget",
+      "detail": "in the list, called by nothing - do not build on it"
+    },
+    {
+      "label": "ssh-audit",
+      "detail": "written to disk, announced to nobody - read the log"
+    },
+    {
+      "label": "\"session\"",
+      "detail": "four different things share the word"
+    }
+  ]
+}

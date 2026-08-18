@@ -1,0 +1,73 @@
+{
+  "template": "flow-rails",
+  "stations": [
+    {
+      "id": "window",
+      "title": "The window",
+      "sub": "the page you look at",
+      "col": 0
+    },
+    {
+      "id": "surface",
+      "title": "73 names",
+      "sub": "the only way across",
+      "col": 1
+    },
+    {
+      "id": "disk",
+      "title": "What survives",
+      "sub": "files outside the program",
+      "col": 2
+    }
+  ],
+  "rails": [
+    {
+      "id": "call",
+      "label": "ASKED FOR",
+      "role": "accent",
+      "position": "top"
+    },
+    {
+      "id": "back",
+      "label": "COMES BACK",
+      "role": "ok",
+      "position": "bottom"
+    }
+  ],
+  "step": {
+    "n": "3",
+    "from": "surface",
+    "to": "window",
+    "via": null,
+    "caption": "Output and exit arrive on channels the page listens for",
+    "request": {
+      "method": "EMIT",
+      "path": "pty-output",
+      "mono": true
+    },
+    "response": {
+      "status": "13",
+      "text": "channels carry the two halves"
+    },
+    "reverse": true,
+    "beats": [
+      "station-highlight",
+      "packet-out",
+      "packet-return",
+      "caption-in"
+    ]
+  },
+  "annotations": [
+    {
+      "kind": "badge",
+      "at_pct": 0.28,
+      "text": "11 PAIRED, 1 SENT, 1 SPLIT LINE",
+      "role": "accent",
+      "hold_s": 3.0
+    }
+  ],
+  "progress_hint": {
+    "step_index": 3,
+    "step_total": 4
+  }
+}

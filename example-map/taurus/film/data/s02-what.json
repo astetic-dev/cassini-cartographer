@@ -1,0 +1,9 @@
+{
+  "template": "takeaway-split",
+  "heading": "What it does",
+  "points": [
+    { "label": "A tab is a process", "detail": "a real console, started in the folder you pick" },
+    { "label": "Two halves", "detail": "a web page, and a Rust program underneath it" },
+    { "label": "State is files", "detail": "seven of them, outside the program" }
+  ]
+}

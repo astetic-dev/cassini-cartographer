@@ -1,0 +1,14 @@
+{
+  "template": "outro-refs",
+  "heading": "How to read the map",
+  "refs": [
+    {
+      "label": "The catalog",
+      "detail": "what is here, and which card answers your question"
+    },
+    {
+      "label": "One card",
+      "detail": "where it lives, and what a change to it touches"
+    }
+  ]
+}

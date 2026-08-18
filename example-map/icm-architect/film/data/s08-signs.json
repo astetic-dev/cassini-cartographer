@@ -1,0 +1,14 @@
+{
+  "template": "takeaway-split",
+  "heading": "Before you open anything",
+  "points": [
+    {
+      "label": "Two files, one name",
+      "detail": "CLAUDE.md is the door; the other is a blank starter"
+    },
+    {
+      "label": "Work goes elsewhere",
+      "detail": "finished assignments are kept in blueprints/"
+    }
+  ]
+}

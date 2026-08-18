@@ -1,0 +1,71 @@
+1
+00:00:00,000 --> 00:00:04,946
+icm-architect turns a way of working into a folder an agent can run.
+
+2
+00:00:07,000 --> 00:00:10,251
+It goes in two directions: it builds a workspace from
+
+3
+00:00:10,251 --> 00:00:13,687
+what you describe, or restructures one you already have.
+
+4
+00:00:17,000 --> 00:00:19,354
+A cold agent opens the root file.
+
+5
+00:00:19,354 --> 00:00:23,420
+Eighteen lines: what this is, and where the method lives.
+
+6
+00:00:29,000 --> 00:00:34,150
+The method asks one question first: what is the repeating unit of work?
+
+7
+00:00:34,150 --> 00:00:36,616
+The answer picks one of six forms.
+
+8
+00:00:41,000 --> 00:00:44,754
+Every working folder gets a contract: what it reads, what
+
+9
+00:00:44,754 --> 00:00:48,047
+it does, what it writes, and what a person checks.
+
+10
+00:00:53,000 --> 00:00:56,831
+New work begins by copying one of eight blank starters.
+
+11
+00:00:56,831 --> 00:00:59,339
+That is the method's own tenth rule.
+
+12
+00:01:05,000 --> 00:01:08,613
+One test decides any of it: an agent with no memory
+
+13
+00:01:08,613 --> 00:01:12,581
+must orient, act and report status from the files alone.
+
+14
+00:01:15,000 --> 00:01:16,225
+Two road signs.
+
+15
+00:01:16,225 --> 00:01:20,964
+Two files here are called CLAUDE.md, only one is the door.
+
+16
+00:01:20,964 --> 00:01:23,905
+And finished work is kept elsewhere.
+
+17
+00:01:25,000 --> 00:01:27,324
+Open the catalog, then one card.
+
+18
+00:01:27,324 --> 00:01:28,994
+That is the whole rule.

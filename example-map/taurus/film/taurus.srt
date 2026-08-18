@@ -1,0 +1,75 @@
+1
+00:00:00,000 --> 00:00:04,934
+Taurus runs several Claude Code agents as terminal tabs in one window.
+
+2
+00:00:07,000 --> 00:00:10,737
+Every tab is a real console process, started in a folder
+
+3
+00:00:10,737 --> 00:00:14,140
+you pick, and it keeps running while you look away.
+
+4
+00:00:17,000 --> 00:00:19,500
+The window holds nothing that matters.
+
+5
+00:00:19,500 --> 00:00:21,868
+It asks the machine half for work by
+
+6
+00:00:21,868 --> 00:00:25,092
+name, and there are seventy-three of those names.
+
+7
+00:00:29,000 --> 00:00:32,377
+Starting a tab makes a real console process on
+
+8
+00:00:32,377 --> 00:00:35,682
+the machine, and a screen buffer in the page.
+
+9
+00:00:35,682 --> 00:00:37,150
+One tab, two halves.
+
+10
+00:00:41,000 --> 00:00:45,789
+What the agent prints comes back on its own channel, and the page draws it.
+
+11
+00:00:45,789 --> 00:00:48,279
+Thirteen channels carry the two halves.
+
+12
+00:00:53,000 --> 00:00:58,508
+The open tabs and the history are written to seven plain files outside the program.
+
+13
+00:00:58,508 --> 00:01:00,964
+They outlive any rewrite of the code.
+
+14
+00:01:05,000 --> 00:01:08,643
+Nothing checks that the two sides agree on a name.
+
+15
+00:01:08,643 --> 00:01:12,140
+Rename one alone and it fails at a button press.
+
+16
+00:01:15,000 --> 00:01:18,556
+Three road signs: a command wired to nothing, a trail
+
+17
+00:01:18,556 --> 00:01:22,314
+nobody listens for, and one word that names four things.
+
+18
+00:01:25,000 --> 00:01:27,412
+Open the catalog, then one card.
+
+19
+00:01:27,412 --> 00:01:29,145
+That is the whole rule.

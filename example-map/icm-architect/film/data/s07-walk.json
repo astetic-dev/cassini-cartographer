@@ -1,0 +1,18 @@
+{
+  "template": "takeaway-split",
+  "heading": "The walk test",
+  "points": [
+    {
+      "label": "Orient",
+      "detail": "open the root, know where you are"
+    },
+    {
+      "label": "Act",
+      "detail": "one contract names inputs, job, output, check"
+    },
+    {
+      "label": "Report status",
+      "detail": "by scanning what exists in the output folders"
+    }
+  ]
+}

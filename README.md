@@ -51,6 +51,11 @@ GitHub shows HTML as source, so those links go through a preview service; clone
 the repo and double-click either file and you get the same page offline, with
 nothing installed and nothing fetched from the network.
 
+Each of the two also carries the **ninety-second film** `film/film.md`
+describes — [taurus](example-map/taurus/film/),
+[icm-architect](example-map/icm-architect/film/) — narrated, with the board it
+was rendered from, so both the result and its whole input are here.
+
 ## Try it in 2 minutes
 
 Two fixtures, one per subject. Both work; nothing in either is broken.

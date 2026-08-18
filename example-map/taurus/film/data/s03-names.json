@@ -1,0 +1,73 @@
+{
+  "template": "flow-rails",
+  "stations": [
+    {
+      "id": "window",
+      "title": "The window",
+      "sub": "the page you look at",
+      "col": 0
+    },
+    {
+      "id": "surface",
+      "title": "73 names",
+      "sub": "the only way across",
+      "col": 1
+    },
+    {
+      "id": "disk",
+      "title": "What survives",
+      "sub": "files outside the program",
+      "col": 2
+    }
+  ],
+  "rails": [
+    {
+      "id": "call",
+      "label": "ASKED FOR",
+      "role": "accent",
+      "position": "top"
+    },
+    {
+      "id": "back",
+      "label": "COMES BACK",
+      "role": "ok",
+      "position": "bottom"
+    }
+  ],
+  "step": {
+    "n": "1",
+    "from": "window",
+    "to": "surface",
+    "via": null,
+    "caption": "The window asks the machine half for work by name",
+    "request": {
+      "method": "CALL",
+      "path": "create_session",
+      "mono": true
+    },
+    "response": {
+      "status": "73",
+      "text": "names are the only way across"
+    },
+    "reverse": false,
+    "beats": [
+      "station-highlight",
+      "packet-out",
+      "packet-return",
+      "caption-in"
+    ]
+  },
+  "annotations": [
+    {
+      "kind": "badge",
+      "at_pct": 0.28,
+      "text": "REGISTERED AT lib.rs:5503",
+      "role": "accent",
+      "hold_s": 3.0
+    }
+  ],
+  "progress_hint": {
+    "step_index": 1,
+    "step_total": 4
+  }
+}

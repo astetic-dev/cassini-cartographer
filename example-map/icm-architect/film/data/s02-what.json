@@ -1,0 +1,18 @@
+{
+  "template": "takeaway-split",
+  "heading": "Two directions",
+  "points": [
+    {
+      "label": "Build",
+      "detail": "a workspace from how you describe the work"
+    },
+    {
+      "label": "Restructure",
+      "detail": "a folder, repo or vault that already exists"
+    },
+    {
+      "label": "Nothing executes",
+      "detail": "the method itself, in plain markdown"
+    }
+  ]
+}

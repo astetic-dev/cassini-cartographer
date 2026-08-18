@@ -1,0 +1,18 @@
+{
+  "template": "takeaway-split",
+  "heading": "What holds it together",
+  "points": [
+    {
+      "label": "One list, 73 names",
+      "detail": "registered in Rust, called from the page"
+    },
+    {
+      "label": "Nothing checks them",
+      "detail": "a rename fails when a button is pressed"
+    },
+    {
+      "label": "97 call sites",
+      "detail": "69 distinct names among them"
+    }
+  ]
+}

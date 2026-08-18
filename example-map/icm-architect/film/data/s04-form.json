@@ -1,0 +1,73 @@
+{
+  "template": "flow-rails",
+  "stations": [
+    {
+      "id": "described",
+      "title": "How you describe it",
+      "sub": "a process, a body of work",
+      "col": 0
+    },
+    {
+      "id": "method",
+      "title": "icm-architect",
+      "sub": "the method, written down",
+      "col": 1
+    },
+    {
+      "id": "workspace",
+      "title": "A folder that runs",
+      "sub": "an agent can walk it",
+      "col": 2
+    }
+  ],
+  "rails": [
+    {
+      "id": "read",
+      "label": "READ",
+      "role": "accent",
+      "position": "top"
+    },
+    {
+      "id": "made",
+      "label": "MADE",
+      "role": "ok",
+      "position": "bottom"
+    }
+  ],
+  "step": {
+    "n": "2",
+    "from": "method",
+    "to": "method",
+    "via": null,
+    "caption": "The repeating unit of work decides the form",
+    "request": {
+      "method": "READ",
+      "path": "references/forms.md",
+      "mono": true
+    },
+    "response": {
+      "status": "6",
+      "text": "forms, one skeleton"
+    },
+    "reverse": false,
+    "beats": [
+      "station-highlight",
+      "packet-out",
+      "packet-return",
+      "caption-in"
+    ]
+  },
+  "annotations": [
+    {
+      "kind": "badge",
+      "at_pct": 0.28,
+      "text": "SELECTION TABLE, forms.md:7-18",
+      "role": "accent",
+      "hold_s": 3.0
+    }
+  ],
+  "progress_hint": {
+    "step_index": 2,
+    "step_total": 4
+  }
+}

@@ -1,0 +1,73 @@
+{
+  "template": "flow-rails",
+  "stations": [
+    {
+      "id": "window",
+      "title": "The window",
+      "sub": "the page you look at",
+      "col": 0
+    },
+    {
+      "id": "surface",
+      "title": "73 names",
+      "sub": "the only way across",
+      "col": 1
+    },
+    {
+      "id": "disk",
+      "title": "What survives",
+      "sub": "files outside the program",
+      "col": 2
+    }
+  ],
+  "rails": [
+    {
+      "id": "call",
+      "label": "ASKED FOR",
+      "role": "accent",
+      "position": "top"
+    },
+    {
+      "id": "back",
+      "label": "COMES BACK",
+      "role": "ok",
+      "position": "bottom"
+    }
+  ],
+  "step": {
+    "n": "2",
+    "from": "window",
+    "to": "surface",
+    "via": null,
+    "caption": "A tab is started under an id the window chose",
+    "request": {
+      "method": "CALL",
+      "path": "create_session",
+      "mono": true
+    },
+    "response": {
+      "status": "2",
+      "text": "places one tab lives at once"
+    },
+    "reverse": false,
+    "beats": [
+      "station-highlight",
+      "packet-out",
+      "packet-return",
+      "caption-in"
+    ]
+  },
+  "annotations": [
+    {
+      "kind": "badge",
+      "at_pct": 0.28,
+      "text": "PROCESS HERE, BUFFER THERE",
+      "role": "accent",
+      "hold_s": 3.0
+    }
+  ],
+  "progress_hint": {
+    "step_index": 2,
+    "step_total": 4
+  }
+}

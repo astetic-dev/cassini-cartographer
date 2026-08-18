@@ -7,12 +7,15 @@ Verified: 2026-08-14 at b20fb45
 ## Is
 The method file: ten invariants, Build mode, Restructure mode, the walk
 test, and the routing table into `references/` and `assets/templates/`.
+The walk test is what every result is checked against - an agent with no
+memory must orient, act and report status from the files alone.
 Its YAML frontmatter (`name`, `description`) is also what the Claude Code
 harness scans to decide when to trigger this skill at all.
 
 ## Lives at
 - `SKILL.md:1-4` - frontmatter, harness-facing trigger description
 - `SKILL.md:14-27` - the ten invariants
+- `SKILL.md:85-97` - the walk test, the check on any result
 - `SKILL.md:105-110` - the References list, the routing table proper
 
 ## Moves by
