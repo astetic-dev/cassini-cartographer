@@ -54,10 +54,11 @@ reason this exists.
 
 **To make a map: nothing.** No keys, no runtime, no dependency — this folder *is*
 the instructions. `render/` needs nothing either: one HTML file with a
-placeholder, filled in and opened in a browser. Only `film/`, an optional
-90-second explainer, reaches outside; it is written against
+placeholder, filled in and opened in a browser — and it is built every run, not
+a separate step you might skip. Only `film/`, an optional 90-second explainer,
+reaches outside; it is written against
 [**Odr**](https://github.com/astetic-dev/odr) (MIT, local, free). Skip it and you
-still have the map, which is the point.
+still have the map and the interactive view, which is the point.
 
 ## What you get
 
@@ -67,7 +68,7 @@ catalog.html      the same index, styled — a self-contained page, made every r
 objects/*.md      one card per thing. Under 40 lines each. Open ONE.
 collisions.md     the words this work uses for more than one thing.
 walks.md          questions grouped by what you want to talk about, with answers.
-map.html          optional. The same map, to look at rather than read.
+map.html          the same map, to look at rather than read — made every run too.
 ```
 
 **Cassini asks where to put it before writing anything.** The default is a
@@ -96,4 +97,7 @@ anchors. Take those to whoever does the judging.
 
 `sample/` holds a **folder**, not one broken file — a body of work is a folder,
 and the input to a map is something that works. And `render/` and `film/` are
-views: delete them and nothing is lost; delete a card and both are wrong.
+views: they build from cards, never the other way round, so deleting a card
+breaks both. `render/` is run every survey now, though — delete it and you keep
+every card but lose `map.html` on the next one. `film/` is the one that stays
+truly optional: delete it and nothing else here even notices.

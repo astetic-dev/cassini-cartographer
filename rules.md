@@ -135,6 +135,15 @@ in `reference/output-style.md` with this territory's title, signposts, question
 table and shelf, and write it beside `catalog.md`. This is the deliverable, not
 an extra — the map does not go back as a wall of unstyled markdown.
 
+Then build `map.html`: follow `render/render.md`'s steps — one JSON object from
+the finished `catalog.md` and every card, filled into `render/map-template.html`.
+This is mechanical, not generative: the JSON is assembled from cards already
+written, nothing new is claimed. A reader who only gets `catalog.md` and
+`catalog.html` back has the index; `map.html` is where the graph itself — the
+edges, the `hits`/`doesNotHit` paths, the collisions — is something to walk
+through rather than read as a table. Skipping it is how a survey ends with the
+index and loses the reason `render/` exists.
+
 ## Format
 
 ### Where the map goes
@@ -151,14 +160,17 @@ catalog.html        the index again, styled — see reference/output-style.md
 objects/<noun>.md   one card per noun
 collisions.md       only if the territory reuses a word
 walks.md            routed questions with their answers
-map.html            optional human view — see render/, and film/ for an explainer
+map.html            the card graph, interactive — see render/render.md
 ```
 
-**`catalog.html` is not optional the way `map.html` is.** `map.html` is an
-optional interactive view of the whole card graph, built from `render/render.md`.
-`catalog.html` is the plain-document rendering of `catalog.md` itself, in the
-shared Taurus house style — write it every time CATALOG closes, per
-`reference/output-style.md`.
+**Neither `catalog.html` nor `map.html` is optional.** Both are written every
+time CATALOG closes: `catalog.html` is the plain-document rendering of
+`catalog.md` itself, in the shared Taurus house style, per
+`reference/output-style.md`; `map.html` is the interactive view of the whole
+card graph, built from `render/render.md`, needing nothing beyond a browser to
+open. The only genuinely optional deliverable is `film/`'s explainer video —
+that one reaches outside this folder, against a real external tool, and skipping
+it costs nothing the map needs.
 
 ### The card
 

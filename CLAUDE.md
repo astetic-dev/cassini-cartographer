@@ -36,6 +36,7 @@ citation names the file.
 | Count referents of a reused word | `reference/naming-collisions.md` |
 | Pick the neighbour a reader would guess | `reference/wrong-neighbours.md` |
 | Try it on a fixture | `sample/hearth/` (code), `sample/wren/` (workspace) |
+| Build the interactive map | `render/render.md` |
 
 ## Where the map goes
 
@@ -49,7 +50,12 @@ to a folder of the reader's own. Never into this one.
 | **Load** | `identity.md`, `rules.md`, `reference/` | the doctrine; this is what a survey receives |
 | **Read** | `README.md`, `examples.md`, `CLAUDE.md` | for people, never loaded in a survey |
 | **Verify** | `sample/`, `receipts/`, `docs/` | evidence about Cassini, never loaded |
-| **Views** | `render/`, `film/` | optional; delete them and nothing is lost |
+| **Views** | `render/`, `film/` | `render/render.md` is loaded at CATALOG close, per `rules.md` — standard, not optional. `film/` stays outside a survey entirely; it needs a real external tool and nothing else here depends on it |
+
+Delete `render/` or `film/` and no map data is lost — both build views from cards
+already written, never the other way round. Deleting `render/` does stop future
+surveys from producing `map.html`, which `rules.md` now requires; deleting
+`film/` costs only the optional explainer.
 
 Open an answer key in `sample/` **after** a run, never before - it gives away
 every seeded fact.
